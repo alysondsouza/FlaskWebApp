@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alyson's Webserver</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles.css"> <!-- Link to the external CSS file -->
+</head>
+<body>
+
+<!-- Header container -->
+<div class="header-container neumorphism">
+    <img src="img/Alyson_Logo.png" alt="Alyson Logo" class="header-logo">
+    <div class="navigation">
+        <button id="homeButton" class="nav-button">Home</button>
+        <button id="searchButton" class="nav-button">Search</button>
+        <button id="addButton" class="nav-button">Add</button>
+        <button id="changeButton" class="nav-button">Change</button>
+    </div>
+</div>
+
+<!-- Table container -->
+<div class="container neumorphism">
+    <table class="table table-bordered table-striped" id="citiesTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Population</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Add container -->
+<div class="form-container neumorphism">
+    <form id="addCityForm">
+        <div class="form-group">
+            <label for="cityName">City:</label>
+            <input type="text" class="form-control" id="cityName" required>
+        </div>
+        <div class="form-group">
+            <label for="countryName">Country:</label>
+            <input type="text" class="form-control" id="countryName" required>
+        </div>
+        <div class="form-group">
+            <label for="populationCount">Population:</label>
+            <input type="number" class="form-control" id="populationCount" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+</div>
+
+<!-- Search container -->
+<div class="search-container neumorphism">
+    <input type="text" id="searchInput" placeholder="Search for a city..." class="form-control">
+    <button id="searchFunctionButton" class="btn btn-primary">Search</button>
+</div>
+
+<!-- Result container -->
+<div id="resultContainer" class="container neumorphism" style="display:none;">
+    <table class="table table-bordered table-striped" id="resultTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Population</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Search results will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script src="/script.js"></script> <!-- Link to the external JavaScript file -->
+</body>
+</html>
+
+
