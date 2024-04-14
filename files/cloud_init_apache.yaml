@@ -1,0 +1,46 @@
+#cloud-init
+users:
+  - default
+  - name: ubuntu
+    gecos: Ubuntu
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    groups: users, admin
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXDco+C9MUVR8B7fQZRC4pkZ9v5vUWZu3BGZIzvyJKK alyson@Ali-Ababwa
+
+package_update: true
+package_upgrade: true
+packages:
+  - fail2ban
+  - apache2
+  - ufw
+  - certbot
+  - python3-certbot-apache
+
+write_files:
+  - path: /etc/ssh/sshd_config.d/disable-passwords.conf
+    content: |
+      PasswordAuthentication no
+    owner: root:root
+    permissions: '0644'
+
+runcmd:
+  # apache2
+  - systemctl enable apache2
+
+  # security
+  - systemctl restart sshd
+  - systemctl enable fail2ban
+  - systemctl start fail2ban
+  - ufw allow 'Apache Full'
+  - ufw allow OpenSSH
+  - ufw allow 80
+  - ufw allow 443
+  - ufw --force enable
+
+  # The next commands are placeholders for the Certbot setup.
+  # You need to manually execute the Certbot command after the instance is initialized because it requires interactive input.
+  # - certbot --apache -d yourdomain.com -d www.yourdomain.com --non-interactive --agree-tos -m your-email@example.com --redirect
+  # Ensure the Apache server starts at boot

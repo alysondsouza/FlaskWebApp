@@ -1,0 +1,77 @@
+---
+#ansible-playbook apachePlaybook.yml
+
+- name: Install and configure pgAdmin4 with PostgreSQL
+  hosts: localhost
+  connection: local
+  become: yes
+
+  tasks:
+    # Package management
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: yes
+        cache_valid_time: 3600
+
+    - name: Install necessary packages
+      apt:
+        name:
+          - fail2ban
+          - apache2
+          - ufw
+          - certbot
+          - python3-certbot-apache
+        state: latest
+
+    # Web server
+    - name: Install apache2
+      apt:
+        name:
+          - apache2
+        state: latest
+
+    - name: Enable and start Apache2
+      systemd:
+        name: apache2
+        enabled: yes
+        state: started
+
+    # Security
+    - name: Disable password authentication for SSH
+      copy:
+        dest: /etc/ssh/sshd_config.d/disable-passwords.conf
+        content: |
+          PasswordAuthentication no
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart SSHD to apply config
+      systemd:
+        name: sshd
+        state: restarted
+
+    - name: Enable fail2ban service
+      ansible.builtin.systemd:
+        name: fail2ban
+        enabled: yes
+        state: started
+
+    - name: Configure UFW rules
+      ansible.builtin.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - 'ssh'
+        - '5432'  # PostgreSQL
+        - '80'    # HTTP
+        - '443'   # HTTPS
+        - '5000'  # Flask
+        - '8000'  # PortForwarding
+
+    - name: Enable UFW with default deny policy
+      ansible.builtin.ufw:
+        state: enabled
+        policy: deny
