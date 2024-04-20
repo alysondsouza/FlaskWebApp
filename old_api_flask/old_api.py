@@ -2,18 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, jsonify, send_from_directory, request
-import os
 import psycopg2
 from flask_cors import CORS
 
-# FLASK (static):5000
-#
-# app = Flask(__name__, static_folder='static')
-# CORS(app)
-#
-# @app.route('/')
-# def index():
-#     return app.send_static_file('index.html')
+DB_NAME = 'mydatabase'
+DB_USER = 'postgres'
+DB_HOST = '192.168.1.10'
+DB_PASSWORD = '123456'
+FLASK_PORT = 5000
 
 app = Flask(__name__)
 CORS(app)
@@ -38,11 +34,11 @@ def custom_static(filename):
 def cities():
     con = None
     try:
-        con = psycopg2.connect(database='mydatabase', user='postgres', host='192.168.1.10', password='123456')
+        con = psycopg2.connect(database=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD)
         cur = con.cursor()
-        cur.execute("SELECT id, name, country, population FROM cities")
+        cur.execute("SELECT id, city, country, population FROM cities")
         rows = cur.fetchall()
-        cities_list = [{"id": row[0], "name": row[1], "country": row[2], "population": row[3]} for row in rows]
+        cities_list = [{"id": row[0], "city": row[1], "country": row[2], "population": row[3]} for row in rows]
         return jsonify(cities_list)
     except psycopg2.DatabaseError as e:
         app.logger.error('Database error: %s', e)
@@ -59,13 +55,12 @@ def add_city():
     data = request.json
     con = None
     try:
-        con = psycopg2.connect(database='mydatabase', user='postgres', host='192.168.1.10', password='123456')
+        con = psycopg2.connect(database=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD)
         cur = con.cursor()
-        # Assuming there is an auto-incrementing ID
-        cur.execute("INSERT INTO cities (name, country, population) VALUES (%s, %s, %s) RETURNING id", (data['name'], data['country'], data['population']))
+        cur.execute("INSERT INTO cities (city, country, population) VALUES (%s, %s, %s) RETURNING id", (data['city'], data['country'], data['population']))
         new_id = cur.fetchone()[0]
         con.commit()
-        return jsonify({"id": new_id, "name": data['name'], "country": data['country'], "population": data['population']}), 201
+        return jsonify({"id": new_id, "city": data['city'], "country": data['country'], "population": data['population']}), 201
     except psycopg2.DatabaseError as e:
         app.logger.error('Database error: %s', e)
         con.rollback()
@@ -83,11 +78,11 @@ def search_city():
     search_query = request.args.get('query', '').lower()
     con = None
     try:
-        con = psycopg2.connect(database='mydatabase', user='postgres', password='123456', host='192.168.1.10')
+        con = psycopg2.connect(database=DB_NAME, user=DB_USER, host=DB_HOST, password=DB_PASSWORD)
         cur = con.cursor()
-        cur.execute("SELECT id, name, country, population FROM cities WHERE LOWER(name) LIKE %s", ('%'+search_query+'%',))
+        cur.execute("SELECT id, city, country, population FROM cities WHERE LOWER(city) LIKE %s", ('%'+search_query+'%',))
         rows = cur.fetchall()
-        cities_list = [{"id": row[0], "name": row[1], "country": row[2], "population": row[3]} for row in rows]
+        cities_list = [{"id": row[0], "city": row[1], "country": row[2], "population": row[3]} for row in rows]
         return jsonify(cities_list)
     except psycopg2.DatabaseError as e:
         app.logger.error('Database error: %s', e)
@@ -96,11 +91,9 @@ def search_city():
         if con:
             con.close()
 
-
 @app.route('/test')
 def test():
     return 'test'
 
 if __name__ == '__main__':
-#   app.run(host='0.0.0.0')
-    app.run(host='0.0.0.0', port=8000)  # Apache
+    app.run(host='0.0.0.0', port=FLASK_PORT)

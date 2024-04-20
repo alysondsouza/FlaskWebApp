@@ -1,0 +1,81 @@
+---
+- name: Update Apache2 default site configuration and enable modules
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Substitute content in 000-default.conf
+      copy:
+        dest: /etc/apache2/sites-available/000-default.conf
+        content: |
+          <VirtualHost *:80>
+              ServerName 127.0.0.1
+              ServerAdmin webmaster@localhost
+              DocumentRoot /var/www/html
+
+              # Serve the static site
+              <Directory "/var/www/html">
+                  Options -Indexes +FollowSymLinks
+                  AllowOverride All
+                  Require all granted
+              </Directory>
+
+              # Proxy /cities.json requests to Flask app running on port 8000
+              ProxyPass /cities.json http://127.0.0.1:8000/cities.json
+              ProxyPassReverse /cities.json http://127.0.0.1:8000/cities.json
+
+              # Logging
+              ErrorLog ${APACHE_LOG_DIR}/error.log
+              CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+          </VirtualHost>
+      notify:
+        - restart apache2
+
+    - name: Enable Apache module 'proxy'
+      apache2_module:
+        state: present
+        name: proxy
+      notify:
+        - restart apache2
+
+    - name: Enable Apache module 'proxy_http'
+      apache2_module:
+        state: present
+        name: proxy_http
+      notify:
+        - restart apache2
+
+    # SET PSQL IP
+    - name: Read content from /mnt/psql.txt
+      slurp:
+        src: /mnt/psql.txt
+      register: psql_content
+
+    - name: Set DB_HOST variable in __init__.py
+      lineinfile:
+        path: /var/www/flask/project/__init__.py
+        regexp: '^DB_HOST\s*='
+        line: "DB_HOST = '{{ (psql_content['content'] | b64decode).strip() }}'"
+        create: no
+      when: psql_content.content | b64decode
+
+    # CHANGE DEFAULT PORT 5000 | -e "app_port=<port>"
+    - name: Replace port number in app.py
+      lineinfile:
+        path: /var/www/flask/app.py
+        regexp: 'app_port\s*=\s*\d+'
+        line: "app_port = {{ app_port }}"
+      when: app_port is defined
+
+    - name: Replace port number in script.js
+      lineinfile:
+        path: /var/www/flask/project/script.js
+        regexp: 'const app_port\s*=\s*\d+;'
+        line: "const app_port = {{ app_port }};"
+      when: app_port is defined
+
+  handlers:
+    - name: restart apache2
+      service:
+        name: apache2
+        state: restarted

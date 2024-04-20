@@ -1,0 +1,164 @@
+/* Main body styling */
+body {
+    background-color: #e0e5ec;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Styling for headings */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Neumorphic design for containers */
+.neumorphism {
+    background: #e0e5ec;
+    border-radius: 20px;
+    box-shadow: 8px 8px 15px #a3b1c6, -8px -8px 15px #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Header container */
+.header-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on small screens */
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* Logo styling */
+.header-logo {
+    height: 50px;
+    width: auto;
+}
+
+/* Navigation container */
+.navigation {
+    display: flex;
+    flex-wrap: wrap; /* Wraps navigation items on small screens */
+    justify-content: center; /* Centering on small screens */
+}
+
+.nav-button:focus, .btn-primary:focus {
+    background: #a3b1c6; /* Darker shade for button focus */
+    outline: none; /* Remove the default focus outline */
+    box-shadow: none; /* Removes additional contour shape */
+}
+
+/* Button styling */
+.nav-button, .btn-primary {
+    background: #e0e5ec;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+    color: #333;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    width: 100%; /* Full width for better mobile interaction */
+}
+
+/* Hover effect for buttons */
+.nav-button:hover, .btn-primary:hover {
+    background: #cfd9df;
+}
+
+/* Button styling when selected to look pressed */
+.nav-button:active, .btn-primary:active {
+    background: #a3b1c6; /* Darker shade for button press */
+    box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+    outline: none; /* Remove the default focus outline */
+}
+
+/* Button styling when selected to look pressed */
+.nav-button:focus, .btn-primary:focus,
+.nav-button.button-selected, .btn-primary.button-selected {
+    background: #e0e5ec; /* Keep the background color consistent */
+    box-shadow: inset 2px 2px 4px #b3c2d1, inset -2px -2px 4px #ffffff; /* Lighter shadow for a subtle pressed effect */
+    outline: none; /* Remove the default focus outline */
+}
+
+/* Adjusted button styling for better interaction */
+.nav-button, .btn-primary {
+    background: #e0e5ec;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
+    color: #333;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    width: 100%; /* Full width for better mobile interaction */
+}
+
+
+/* Container styling */
+.container, .search-container, .form-container {
+    width: 100%; /* Full width on small screens */
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-selected {
+    box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+}
+
+#searchFunctionButton {
+    margin-top: 10px;
+}
+
+.button-selected {
+    box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Input field styling */
+.form-control {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: inset 8px 8px 15px #a3b1c6, inset -8px -8px 15px #ffffff;
+    outline: none; /* Removes the default focus outline */
+    width: 100%; /* Full width for form elements */
+}
+
+/* Table styling */
+.table {
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+}
+
+/* Table cell styling */
+th, td {
+    background: #e0e5ec;
+    border-radius: 10px;
+}
+
+/* Media query for tablets and desktops */
+@media (min-width: 768px) {
+    .nav-button, .btn-primary {
+        width: auto; /* Revert to auto width for larger screens */
+    }
+    .header-container, .navigation {
+        padding: 10px 20px; /* Larger padding on bigger screens */
+    }
+}

@@ -1,0 +1,19 @@
+---
+- name: Clone Playbooks
+  hosts: localhost
+  gather_facts: no
+  become: true
+  tasks:
+    - name: Clone FlaskWebApp repository into /tmp/FlaskWebApp
+      git:
+        repo: 'https://github.com/alysondsouza/FlaskWebApp.git'
+        dest: '/tmp/FlaskWebApp'
+        version: "HEAD"
+
+    - name: Move playbooks from /tmp/FlaskWebApp to home directory
+      command: mv /tmp/FlaskWebApp/playbooks/ ~/
+
+    - name: Remove the cloned FlaskWebApp directory
+      file:
+        path: /tmp/FlaskWebApp
+        state: absent

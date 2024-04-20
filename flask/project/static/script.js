@@ -1,5 +1,5 @@
-// FLASK:5000
-// APACHE:8000
+const app_port = 5000;
+const baseUrl = `http://127.0.0.1:${app_port}`;
 
 const homeButton = document.getElementById("homeButton");
 const searchButton = document.getElementById("searchButton");
@@ -56,7 +56,7 @@ window.onload = () => {
   homeButton.focus();
 };
 
-fetch("http://127.0.0.1:8000/cities.json")
+fetch(`${baseUrl}/cities.json`)
   .then((response) => response.json())
   .then((data) => {
     const tableBody = document
@@ -66,7 +66,7 @@ fetch("http://127.0.0.1:8000/cities.json")
       let newRow = tableBody.insertRow();
       newRow.innerHTML = `
             <td>${index + 1}</td>
-            <td>${item.name}</td>
+            <td>${item.city}</td>
             <td>${item.country}</td>
             <td>${item.population.toLocaleString()}</td>
         `;
@@ -77,16 +77,16 @@ fetch("http://127.0.0.1:8000/cities.json")
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const name = document.getElementById("cityName").value;
+  const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
 
-  fetch("http://127.0.0.1:8000/add_city", {
+  fetch(`${baseUrl}/add_city`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name, country, population }),
+    body: JSON.stringify({ city, country, population }),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -108,11 +108,10 @@ document
       .getElementById("resultTable")
       .getElementsByTagName("tbody")[0];
 
-    fetch("http://127.0.0.1:8000/cities.json")
+    fetch(`${baseUrl}/cities.json`)
       .then((response) => response.json())
       .then((data) => {
         resultTableBody.innerHTML = "";
-
         const filteredData = data.filter((city) =>
           city.name.toLowerCase().includes(searchValue)
         );
@@ -121,17 +120,23 @@ document
           filteredData.forEach((item, index) => {
             let newRow = resultTableBody.insertRow();
             newRow.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${item.name}</td>
-                    <td>${item.country}</td>
-                    <td>${item.population.toLocaleString()}</td>
-                `;
+          <td>${index + 1}</td>
+          <td>${item.name}</td>
+          <td>${item.country}</td>
+          <td>${item.population.toLocaleString()}</td>
+        `;
           });
           document.getElementById("resultContainer").style.display = "block";
         } else {
-          resultTableBody.innerHTML = '<tr><td colspan="4">No match</td></tr>';
+          resultTableBody.innerHTML =
+            '<tr><td colspan="4">No match found</td></tr>';
           document.getElementById("resultContainer").style.display = "block";
         }
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => {
+        console.error("Error:", error);
+        resultTableBody.innerHTML =
+          '<tr><td colspan="4">Error fetching data</td></tr>';
+        document.getElementById("resultContainer").style.display = "block";
+      });
   });

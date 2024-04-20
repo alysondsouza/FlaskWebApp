@@ -1,12 +1,16 @@
 ---
-#ansible-playbook apachePlaybook.yml
-
-- name: Install and configure pgAdmin4 with PostgreSQL
+- name: Install and configure Apache2
   hosts: localhost
   connection: local
-  become: yes
+  become: true
 
   tasks:
+    # Setup
+    - name: Set IP address to mnt
+      ansible.builtin.shell:
+        cmd: |
+          ip -4 addr show enp0s3 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
+
     # Package management
     - name: Update and upgrade apt packages
       apt:
@@ -14,14 +18,20 @@
         upgrade: yes
         cache_valid_time: 3600
 
-    - name: Install necessary packages
+    - name: Install security packages
       apt:
         name:
           - fail2ban
-          - apache2
           - ufw
           - certbot
+        state: latest
+
+    - name: Install python packages
+      apt:
+        name:
           - python3-certbot-apache
+          - python3-pip
+          - python3.10-venv
         state: latest
 
     # Web server
@@ -45,7 +55,7 @@
           PasswordAuthentication no
         owner: root
         group: root
-        mode: '0644'
+        mode: "0644"
 
     - name: Restart SSHD to apply config
       systemd:
@@ -64,12 +74,13 @@
         port: "{{ item }}"
         proto: tcp
       loop:
-        - 'ssh'
-        - '5432'  # PostgreSQL
-        - '80'    # HTTP
-        - '443'   # HTTPS
-        - '5000'  # Flask
-        - '8000'  # PortForwarding
+        - "ssh"
+        - "Apache Full"
+        - "5432" # PostgreSQL
+        - "80" # HTTP
+        - "443" # HTTPS
+        - "5000" # Flask
+        - "8000" # PortForwarding
 
     - name: Enable UFW with default deny policy
       ansible.builtin.ufw:

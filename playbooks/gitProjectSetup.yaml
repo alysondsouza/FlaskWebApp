@@ -1,0 +1,77 @@
+---
+- name: Git Project Setup
+  hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: Remove existing files from /var/www
+      file:
+        path: /var/www/
+        state: absent
+
+    - name: Clone the repository to /tmp/FlaskWebApp
+      git:
+        repo: https://github.com/alysondsouza/FlaskWebApp.git
+        dest: /tmp/FlaskWebApp
+        clone: yes
+        update: no
+
+    - name: Move the cloned project to /var/www
+      command: mv /tmp/FlaskWebApp/* /var/www/
+
+    - name: Remove /tmp/FlaskWebApp directory
+      file:
+        path: /tmp/FlaskWebApp
+        state: absent
+
+    - name: Change ownership of /var/www to root
+      file:
+        path: /var/www/
+        owner: root
+        group: root
+        recurse: yes
+
+    - name: Change ownership of subdirectories to 'ubuntu'
+      file:
+        path: "{{ item }}"
+        owner: ubuntu
+        group: ubuntu
+        recurse: yes
+      with_items:
+        - /var/www/flask
+
+    - name: Set directory permissions for html and project directories
+      file:
+        path: "{{ item }}"
+        mode: '0755'
+        recurse: yes
+      with_items:
+        - /var/www/html
+        - /var/www/flask/project
+
+    - name: Set file permissions for html, static files, and templates
+      find:
+        paths: "{{ item }}"
+        file_type: file
+        recurse: yes
+      register: files_to_modify
+      with_items:
+        - /var/www/html
+        - /var/www/flask/project/static
+        - /var/www/flask/project/templates
+
+    - name: Apply file permissions to discovered files
+      file:
+        path: "{{ item.path }}"
+        mode: '0644'
+      with_items: "{{ files_to_modify.results | map(attribute='files') | flatten }}"
+
+    - name: Set permissions for flask main directory and scripts
+      file:
+        path: "{{ item.path }}"
+        mode: "{{ item.mode }}"
+      with_items:
+        - { path: '/var/www/flask', mode: '0750' }
+        - { path: '/var/www/flask/app.py', mode: '0750' }
+        - { path: '/var/www/flask/venv', mode: '0750' }
+        - { path: '/var/www/flask/project/__init__.py', mode: '0640' }

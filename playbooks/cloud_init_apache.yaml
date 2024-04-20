@@ -10,6 +10,11 @@ users:
     ssh_authorized_keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXDco+C9MUVR8B7fQZRC4pkZ9v5vUWZu3BGZIzvyJKK alyson@Ali-Ababwa
 
+- name: IP address
+  ansible.builtin.shell:
+    cmd: |
+      ip -4 addr show enp0s3 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
+      
 package_update: true
 package_upgrade: true
 packages:

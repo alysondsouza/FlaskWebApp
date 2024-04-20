@@ -3,7 +3,7 @@ users:
   - default
   - name: ubuntu
     gecos: Ubuntu
-    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     groups: users, admin
     shell: /bin/bash
     lock_passwd: true
@@ -15,10 +15,9 @@ write_files:
     content: |
       PasswordAuthentication no
     owner: root:root
-    permissions: '0644'
+    permissions: "0644"
 
 runcmd:
   - systemctl restart sshd
-
 #packages:
 #  - ansible

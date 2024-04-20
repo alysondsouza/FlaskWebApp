@@ -1,10 +1,8 @@
 ---
-#ansible-playbook uwsgiPlaybook.yml
-
 - name: Install and configure uWSGI for Flask app with Apache on Ubuntu
   hosts: localhost
   connection: local
-  become: yes
+  become: true
 
   tasks:
     - name: Install necessary packages
@@ -45,23 +43,22 @@
         content: |
           [uwsgi]
           module = search:app
-          
+
           master = true
           processes = 5
-          
+
           socket = /var/www/html/search.sock
           chmod-socket = 660
           vacuum = true
-          
+
           die-on-term = true
-        mode: '0644'
+        mode: "0644"
 
     - name: Get IP address of enp0s8 and fail if not found
       shell: |
         ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' || { echo "IP address not found"; exit 1; }
       register: IP
       failed_when: "'IP address not found' in IP.stdout or IP.rc != 0"
-
 
     - name: Configure Apache to proxy requests to uWSGI
       ansible.builtin.blockinfile:
@@ -79,7 +76,7 @@
                   ProxyPass unix:/var/www/html/search.sock|uwsgi://search
               </Location>
           </VirtualHost>
-      diff: yes
+      diff: true
       notify: reload apache2
 
     - name: Enable the Apache site configuration
@@ -104,7 +101,7 @@
 
           [Install]
           WantedBy=multi-user.target
-        mode: '0644'
+        mode: "0644"
       notify: start search_uwsgi
 
   handlers:

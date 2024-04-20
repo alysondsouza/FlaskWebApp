@@ -1,7 +1,0 @@
-#cloud-init
-users:
-  - default
-  - name: ubuntu
-    sudo: 'ALL=(ALL) NOPASSWD:ALL'
-    ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILXDco+C9MUVR8B7fQZRC4pkZ9v5vUWZu3BGZIzvyJKK alyson@Ali-Ababwa

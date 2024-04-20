@@ -1,13 +1,18 @@
 ---
-#ansible-playbook pgAdminPlaybook.yml
 #http://127.0.0.1/pgadmin4
 
 - name: Install and configure pgAdmin4 with PostgreSQL
   hosts: localhost
   connection: local
-  become: yes
+  become: true
 
   tasks:
+    # Setup
+    - name: Set IP address to mnt
+      ansible.builtin.shell:
+        cmd: |
+          ip -4 addr show enp0s3 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
+
     - name: Block Update
       block:
         - name: Update packages
@@ -32,7 +37,7 @@
               - postgresql-contrib
             state: present
           become: true
-            
+
         - name: Configure postgresql.conf for listen_addresses
           ansible.builtin.lineinfile:
             path: /etc/postgresql/14/main/postgresql.conf
@@ -116,10 +121,10 @@
             port: "{{ item }}"
             proto: tcp
           loop:
-            - 'ssh'
-            - '5432'  # PostgreSQL
-            - '80'    # HTTP
-            - '443'   # HTTPS
+            - "ssh"
+            - "5432" # PostgreSQL
+            - "80" # HTTP
+            - "443" # HTTPS
 
         - name: Enable UFW with default deny policy
           ansible.builtin.ufw:
