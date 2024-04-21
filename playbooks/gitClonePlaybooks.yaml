@@ -4,19 +4,19 @@
   connection: local
   become: true
   tasks:
-    - name: Create playbooks directory
+    - name: Create new /var/www
       file:
-        path: /home/ubuntu/playbooks/
+        path: /play/
         state: directory
 
-    - name: Copy the cloned project to /playbooks
+    - name: Copy the cloned project to /var/www
       ansible.builtin.copy:
-        src: /home/ubuntu/FlaskWebApp/playbooks/
-        dest: /home/ubuntu/playbooks/
+        src: ~/FlaskWebApp/
+        dest: /play/
         owner: root
         group: root
 
     - name: Remove FlaskWebApp directory
       file:
-        path: /home/ubuntu/FlaskWebApp
+        path: ~/FlaskWebApp
         state: absent
