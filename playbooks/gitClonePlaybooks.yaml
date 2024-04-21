@@ -1,22 +1,23 @@
----
 - name: Git Project Setup
   hosts: localhost
-  connection: local
-  become: true
+  gather_facts: yes
   tasks:
     - name: Create folder playbooks/
       file:
-        path: /home/ubuntu/playbooks/
+        path: "/home/ubuntu/playbooks"
         state: directory
 
     - name: Copy the cloned project to playbooks/
-      ansible.builtin.copy:
-        src: /home/ubuntu/FlaskWebApp/playbooks/
-        dest: /home/ubuntu/playbooks/
-        owner: root
-        group: root
+      copy:
+        src: "/home/ubuntu/FlaskWebApp/"
+        dest: "/home/ubuntu/playbooks/"
+        remote_src: yes
 
     - name: Remove FlaskWebApp directory
       file:
-        path: /home/ubuntu/FlaskWebApp
+        path: "/home/ubuntu/FlaskWebApp"
         state: absent
+
+    - name: Additional operations on the playbooks directory
+      debug:
+        msg: "Perform operations here, ensuring /home/ubuntu/FlaskWebApp is no longer referenced."
