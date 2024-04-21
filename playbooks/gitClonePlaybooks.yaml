@@ -4,15 +4,15 @@
   connection: local
   become: true
   tasks:
-    - name: Create new /var/www
+    - name: Create folder playbooks/
       file:
-        path: /play/
+        path: /playbooks/
         state: directory
 
     - name: Copy the cloned project to /var/www
       ansible.builtin.copy:
         src: ~/FlaskWebApp/
-        dest: /play/
+        dest: /playbooks/
         owner: root
         group: root
 
