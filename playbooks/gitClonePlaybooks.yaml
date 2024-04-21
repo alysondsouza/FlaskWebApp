@@ -18,5 +18,6 @@
 
     - name: Remove FlaskWebApp directory
       file:
-        path: ~/FlaskWebApp
+        path: /home/ubuntu/FlaskWebApp
         state: absent
+        recurse: yes
