@@ -20,4 +20,3 @@
       file:
         path: /home/ubuntu/FlaskWebApp
         state: absent
-        recurse: yes
