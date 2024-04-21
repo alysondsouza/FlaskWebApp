@@ -54,7 +54,8 @@
         - name: Configure pg_hba.conf for md5 auth
           ansible.builtin.shell:
             cmd: |
-              IP=$(cat /mnt/apache.txt) && echo "host   all   all   ${IP}/32   md5" >> /etc/postgresql/14/main/pg_hba.conf
+              PSQL_IP=$(ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}') && echo "host all all ${PSQL_IP}/32 md5" >> /etc/postgresql/14/main/pg_hba.conf
+              APACHE_IP=$(cat /mnt/apache.txt) && echo "host   all   all   ${APACHE_IP}/32   md5" >> /etc/postgresql/14/main/pg_hba.conf
           diff: yes
 
         - name: Restart PostgreSQL service
