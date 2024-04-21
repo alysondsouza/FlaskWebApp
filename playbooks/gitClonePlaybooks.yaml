@@ -1,30 +1,13 @@
 ---
 - name: Git Project Setup
   hosts: localhost
-  connection: local
-  become: true
   tasks:
-    - name: Ensure the playbooks/ directory exists
+    - name: Create the folder playbooks/
       file:
-        path: /home/ubuntu/playbooks/
+        path: playbooks
         state: directory
-        mode: "0755" # Ensuring the directory is accessible
 
     - name: Copy the cloned project to playbooks/
       ansible.builtin.copy:
-        src: /home/ubuntu/FlaskWebApp/
-        dest: /home/ubuntu/playbooks/
-        owner: root
-        group: root
-      register: copy_task # Registering the output of copy task
-
-    - name: Check if copy was successful
-      fail: # This task will stop the playbook if copy was not successful
-        msg: "The copy operation failed."
-      when: copy_task.failed
-
-    - name: Remove FlaskWebApp directory
-      file:
-        path: /home/ubuntu/FlaskWebApp
-        state: absent
-      when: copy_task.changed # Ensures removal only if the copy was actually performed
+        src: FlaskWebApp
+        dest: playbooks
