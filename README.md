@@ -39,8 +39,8 @@ ansible-playbook /var/www/playbooks/installApache.yaml
 ansible-playbook /var/www/playbooks/configurationApache.yaml
 ansible-playbook /var/www/playbooks/serviceFlask.yaml
 ```
-A new port can be assigned if necessary: <br>
-ansible-playbook /var/www/playbooks/configurationApache.yaml -e "app_port=8000"
+> A new port can be assigned if necessary: <br>
+> `ansible-playbook /var/www/playbooks/configurationApache.yaml -e "app_port=8000"`
 
 
 Multipass Portforwarding | PowerShell (Administrator):
