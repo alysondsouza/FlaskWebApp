@@ -8,6 +8,7 @@ This repository contains the setup for a Flask web application with a PostgreSQL
 - Install [Multipass](https://multipass.run/docs/installing-on-windows) and [VirtualBox](https://www.oracle.com/virtualization/technologies/vm/downloads/virtualbox-downloads.html).
 - Set the `VBOX_MSI_INSTALL_PATH` environment variable to the path where VirtualBox is installed.
 - Download and setup [PsExec](https://docs.microsoft.com/en-us/sysinternals/downloads/psexec)
+- Create a [cloud-init](https://github.com/alysondsouza/FlaskWebApp/blob/main/playbooks/cloud_init.yaml) file locally to setup SSH Key.
 - Create folder `C:\mnt\` for sharing files between Multipass instances, [mount](https://multipass.run/docs/share-data-with-an-instance).
 
 ## Multipass Instances Setup
@@ -33,7 +34,7 @@ git clone https://github.com/alysondsouza/FlaskWebApp.git
 
 Run the Ansible playbooks:
 ```
-ansible-playbook /var/www/playbooks/gitProjectSetup.yaml
+ansible-playbook FlaskWebApp/playbooks/gitProjectSetup.yaml
 ansible-playbook /var/www/playbooks/installApache.yaml
 ansible-playbook /var/www/playbooks/configurationApache.yaml {{ -e "app_port=8000" }}
 ansible-playbook /var/www/playbooks/serviceFlask.yaml
@@ -64,7 +65,7 @@ git clone https://github.com/alysondsouza/FlaskWebApp.git
 
 Run the Ansible playbooks to set up PostgreSQL and pgAdmin:
 ```
-ansible-playbook playbooks/gitClonePlaybooks.yaml
+ansible-playbook FlaskWebApp/playbooks/gitClonePlaybooks.yaml
 ansible-playbook playbooks/installPgAdmin.yaml
 ansible-playbook playbooks/createDatabase.yaml
 ```

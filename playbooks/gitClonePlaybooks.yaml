@@ -1,13 +1,22 @@
 ---
-- name: Clone Playbooks
+- name: Git Project Setup
   hosts: localhost
-  gather_facts: no
+  connection: local
   become: true
   tasks:
-    - name: Move playbooks foæder to home directory
-      command: mv ~/FlaskWebApp/playbooks/ ~/
+    - name: Create playbooks directory
+      file:
+        path: home/ubuntu/playbooks/
+        state: directory
 
-    - name: Remove the cloned FlaskWebApp directory
+    - name: Copy the cloned project to /playbooks
+      ansible.builtin.copy:
+        src: home/ubuntu/FlaskWebApp/playbooks/
+        dest: home/ubuntu/playbooks/
+        owner: root
+        group: root
+
+    - name: Remove FlaskWebApp directory
       file:
         path: ~/FlaskWebApp
         state: absent
