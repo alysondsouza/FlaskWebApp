@@ -5,16 +5,16 @@
   tasks:
     - name: Set PostgreSQL user password
       ansible.builtin.shell:
-        cmd: sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456';"
+        cmd: sudo -iu postgres psql -c "ALTER USER postgres PASSWORD '123456';"
 
     - name: Create database
       ansible.builtin.shell:
-        cmd: sudo -u postgres createdb mydatabase
+        cmd: sudo -iu postgres createdb mydatabase
 
     - name: Create cities table
       ansible.builtin.shell:
         cmd: |
-          sudo -u postgres psql -d mydatabase -c "CREATE TABLE cities (
+          sudo -iu postgres psql -d mydatabase -c "CREATE TABLE cities (
             id SERIAL PRIMARY KEY,
             city VARCHAR(255) NOT NULL,
             country VARCHAR(255) NOT NULL,
