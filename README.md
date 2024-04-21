@@ -42,12 +42,17 @@ ansible-playbook /var/www/playbooks/serviceFlask.yaml
 
 Multipass Portforwarding | PowerShell (Administrator):
 ```
-& env:USERPROFILE\Downloads\PSTools\PsExec.exe -s $env:VBOX_MSI_INSTALL_PATH\VBoxManage.exe controlvm "apache" natpf1 "flaskService,tcp,127.0.0.1,5000,,5000"
+& $env:USERPROFILE\Downloads\PSTools\PsExec.exe -s $env:VBOX_MSI_INSTALL_PATH\VBoxManage.exe controlvm "apache" natpf1 "myservice,tcp,127.0.0.1,5000,,5000"
 ```
 
 The Flask application will be accessible at:
 ```
 http://127.0.0.1:5000/
+```
+
+Logs:
+```
+journalctl -u flask.service -f
 ```
 
 ## POSTGRES
