@@ -9,7 +9,7 @@
     - name: Set IP address to mnt
       ansible.builtin.shell:
         cmd: |
-          ip -4 addr show enp0s3 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
+          ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
 
     # Package management
     - name: Update and upgrade apt packages
@@ -75,12 +75,9 @@
         proto: tcp
       loop:
         - "ssh"
-        - "Apache Full"
-        - "5432" # PostgreSQL
         - "80" # HTTP
         - "443" # HTTPS
         - "5000" # Flask
-        - "8000" # PortForwarding
 
     - name: Enable UFW with default deny policy
       ansible.builtin.ufw:

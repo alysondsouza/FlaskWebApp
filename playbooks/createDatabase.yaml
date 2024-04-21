@@ -1,52 +1,47 @@
----
 - name: Create and Populate Database
   hosts: localhost
-  connection: local
   become: true
-  become_user: postgres
+
   tasks:
     - name: Set PostgreSQL user password
-      shell: |
-        psql <<SQL
-        ALTER USER postgres PASSWORD '123456';
-        SQL
+      ansible.builtin.shell:
+        cmd: sudo -u postgres psql -c "ALTER USER postgres PASSWORD '123456';"
 
     - name: Create database
-      shell: createdb mydatabase
+      ansible.builtin.shell:
+        cmd: sudo -u postgres createdb mydatabase
 
     - name: Create cities table
-      shell: |
-        psql -d mydatabase <<SQL
-        CREATE TABLE cities (
+      ansible.builtin.shell:
+        cmd: |
+          sudo -u postgres psql -d mydatabase -c "CREATE TABLE cities (
             id SERIAL PRIMARY KEY,
             city VARCHAR(255) NOT NULL,
             country VARCHAR(255) NOT NULL,
             population BIGINT NOT NULL
-        );
-        SQL
+          );"
 
     - name: Insert data into cities table
-      shell: |
-        psql -d mydatabase <<SQL
-        INSERT INTO public.cities (id, city, country, population) VALUES
-        (1, 'Tokyo', 'Japan', 37400068),
-        (2, 'Delhi', 'India', 28514000),
-        (3, 'Shanghai', 'China', 25582000),
-        (4, 'São Paulo', 'Brazil', 22046000),
-        (5, 'Mexico City', 'Mexico', 21672000),
-        (6, 'Cairo', 'Egypt', 20484900),
-        (7, 'Dhaka', 'Bangladesh', 20278000),
-        (8, 'Mumbai', 'India', 20185000),
-        (9, 'Beijing', 'China', 20035455),
-        (10, 'Karachi', 'Pakistan', 16093786),
-        (11, 'Chongqing', 'China', 15872000),
-        (12, 'Istanbul', 'Turkey', 15460000),
-        (13, 'Buenos Aires', 'Argentina', 14967000),
-        (14, 'Kolkata', 'India', 14865000),
-        (15, 'Lagos', 'Nigeria', 14767800),
-        (16, 'Manila', 'Philippines', 13923452),
-        (17, 'Rio de Janeiro', 'Brazil', 13636000),
-        (18, 'Lahore', 'Pakistan', 13052300),
-        (19, 'Bangalore', 'India', 12736292),
-        (20, 'London', 'United Kingdom', 12500000);
-        SQL
+      ansible.builtin.shell:
+        cmd: |
+          sudo -iu postgres psql -d mydatabase -c "INSERT INTO public.cities (city, country, population) VALUES
+            ('Tokyo', 'Japan', 37400068),
+            ('Delhi', 'India', 28514000),
+            ('Shanghai', 'China', 25582000),
+            ('São Paulo', 'Brazil', 22046000),
+            ('Mexico City', 'Mexico', 21672000),
+            ('Cairo', 'Egypt', 20484900),
+            ('Dhaka', 'Bangladesh', 20278000),
+            ('Mumbai', 'India', 20185000),
+            ('Beijing', 'China', 20035455),
+            ('Karachi', 'Pakistan', 16093786),
+            ('Chongqing', 'China', 15872000),
+            ('Istanbul', 'Turkey', 15460000),
+            ('Buenos Aires', 'Argentina', 14967000),
+            ('Kolkata', 'India', 14865000),
+            ('Lagos', 'Nigeria', 14767800),
+            ('Manila', 'Philippines', 13923452),
+            ('Rio de Janeiro', 'Brazil', 13636000),
+            ('Lahore', 'Pakistan', 13052300),
+            ('Bangalore', 'India', 12736292),
+            ('London', 'United Kingdom', 12500000);"

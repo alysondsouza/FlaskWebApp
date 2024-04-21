@@ -11,7 +11,7 @@
     - name: Set IP address to mnt
       ansible.builtin.shell:
         cmd: |
-          ip -4 addr show enp0s3 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
+          ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
 
     - name: Block Update
       block:
@@ -44,13 +44,13 @@
             line: "listen_addresses = '*'"
             regexp: "^#listen_addresses = 'localhost'"
             backrefs: yes
+          diff: yes
 
         - name: Configure pg_hba.conf for md5 auth
           ansible.builtin.shell:
             cmd: |
-              IP=$(ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}') && echo "host all all ${IP}/32 md5" >> /etc/postgresql/14/main/pg_hba.conf
-          args:
-            executable: /bin/bash
+              IP=$(cat /mnt/apache.txt) && echo "host   all   all   ${IP}/32   md5" >> /etc/postgresql/14/main/pg_hba.conf
+          diff: yes
 
         - name: Restart PostgreSQL service
           ansible.builtin.systemd:
@@ -94,7 +94,7 @@
           ansible.builtin.command:
             cmd: "/usr/pgadmin4/bin/setup-web.sh --yes"
           environment:
-            PGADMIN_SETUP_EMAIL: "alysondsouza@yahoo.com"
+            PGADMIN_SETUP_EMAIL: "psql@psql.com"
             PGADMIN_SETUP_PASSWORD: "123456"
 
     - name: Security

@@ -1,0 +1,52 @@
+---
+# cd /var/www/flask
+# python3 -m venv venv
+# source venv/bin/activate
+# pip install flask psycopg2-binary flask-cors
+# export FLASK_APP=app.py
+# flask run --host=0.0.0.0 --port=5000
+
+# nohup flask run --host=0.0.0.0 --port=5000 > flask.log 2>&1 &
+# lsof -i :5000
+# kill <process>
+
+- name: Setup and run Flask application
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Create a virtual environment for the Flask project
+      ansible.builtin.command:
+        cmd: python3 -m venv /var/www/flask/venv
+        creates: /var/www/flask/venv
+
+    - name: Install required Python packages
+      ansible.builtin.pip:
+        name: "{{ item }}"
+        virtualenv: /var/www/flask/venv
+      loop:
+        - flask
+        - psycopg2-binary
+        - flask-cors
+
+    - name: Create systemd service file for Flask app | Flask as a Service
+      ansible.builtin.template:
+        src: "/var/www/flask/project/templates/flask.template.j2"
+        dest: /etc/systemd/system/flask.service
+      notify: restart flask
+
+    # sudo systemctl enable flask | sudo systemctl start flask
+    - name: Enable and Start Flask systemd service
+      ansible.builtin.systemd:
+        name: flask
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+  handlers:
+    - name: restart flask
+      ansible.builtin.systemd:
+        name: flask
+        state: restarted
+        enabled: yes
+        daemon_reload: yes

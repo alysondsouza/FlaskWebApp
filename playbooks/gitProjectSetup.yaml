@@ -9,28 +9,24 @@
         path: /var/www/
         state: absent
 
-    - name: Clone the repository to /tmp/FlaskWebApp
-      git:
-        repo: https://github.com/alysondsouza/FlaskWebApp.git
-        dest: /tmp/FlaskWebApp
-        clone: yes
-        update: no
-
-    - name: Move the cloned project to /var/www
-      command: mv /tmp/FlaskWebApp/* /var/www/
-
-    - name: Remove /tmp/FlaskWebApp directory
-      file:
-        path: /tmp/FlaskWebApp
-        state: absent
-
-    - name: Change ownership of /var/www to root
+    - name: Create new /var/www
       file:
         path: /var/www/
+        state: directory
+
+    - name: Copy the cloned project to /var/www
+      ansible.builtin.copy:
+        src: ~/FlaskWebApp/
+        dest: /var/www/
         owner: root
         group: root
-        recurse: yes
 
+    - name: Remove FlaskWebApp directory
+      file:
+        path: ~/FlaskWebApp
+        state: absent
+
+    # PERMISSIONS
     - name: Change ownership of subdirectories to 'ubuntu'
       file:
         path: "{{ item }}"
@@ -43,7 +39,7 @@
     - name: Set directory permissions for html and project directories
       file:
         path: "{{ item }}"
-        mode: '0755'
+        mode: "0755"
         recurse: yes
       with_items:
         - /var/www/html
@@ -63,7 +59,7 @@
     - name: Apply file permissions to discovered files
       file:
         path: "{{ item.path }}"
-        mode: '0644'
+        mode: "0644"
       with_items: "{{ files_to_modify.results | map(attribute='files') | flatten }}"
 
     - name: Set permissions for flask main directory and scripts
@@ -71,7 +67,6 @@
         path: "{{ item.path }}"
         mode: "{{ item.mode }}"
       with_items:
-        - { path: '/var/www/flask', mode: '0750' }
-        - { path: '/var/www/flask/app.py', mode: '0750' }
-        - { path: '/var/www/flask/venv', mode: '0750' }
-        - { path: '/var/www/flask/project/__init__.py', mode: '0640' }
+        - { path: "/var/www/flask", mode: "0750" }
+        - { path: "/var/www/flask/app.py", mode: "0750" }
+        - { path: "/var/www/flask/project/__init__.py", mode: "0640" }
