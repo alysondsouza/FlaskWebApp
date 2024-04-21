@@ -10,7 +10,7 @@
 
     - name: Copy the cloned project to playbooks/
       ansible.builtin.copy:
-        src: /home/ubuntu/FlaskWebApp/
+        src: /home/ubuntu/FlaskWebApp/playbooks/
         dest: /home/ubuntu/playbooks/
         owner: ubuntu
         group: ubuntu
