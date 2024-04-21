@@ -7,132 +7,123 @@
   become: true
 
   tasks:
+    # Cleanup
     - name: Remove FlaskWebApp directory
       file:
         path: /home/ubuntu/FlaskWebApp
         state: absent
 
-    # Setup
-    - name: Set IP address to mnt
+    # Package management
+    - name: Update packages
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
+      become: true
+
+    - name: Upgrade packages
+      apt:
+        upgrade: dist
+        force_apt_get: yes
+      become: true
+
+    # PostgreSQL
+    - name: Install PostgreSQL
+      apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+        state: present
+      become: true
+
+    - name: Configure postgresql.conf for listen_addresses
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/14/main/postgresql.conf
+        line: "listen_addresses = '*'"
+        regexp: "^#listen_addresses = 'localhost'"
+        backrefs: yes
+      diff: yes
+
+    - name: Configure pg_hba.conf for md5 auth
       ansible.builtin.shell:
         cmd: |
-          ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
+          PSQL_IP=$(ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}') && echo "host all all ${PSQL_IP}/32 md5" >> /etc/postgresql/14/main/pg_hba.conf
+          APACHE_IP=$(cat /mnt/apache.txt) && echo "host   all   all   ${APACHE_IP}/32   md5" >> /etc/postgresql/14/main/pg_hba.conf
+      diff: yes
 
-    - name: Block Update
-      block:
-        - name: Update packages
-          apt:
-            update_cache: yes
-            force_apt_get: yes
-            cache_valid_time: 3600
-          become: true
+    - name: Restart PostgreSQL service
+      ansible.builtin.systemd:
+        name: postgresql
+        state: restarted
 
-        - name: Upgrade packages
-          apt:
-            upgrade: dist
-            force_apt_get: yes
-          become: true
+    - name: Enable PostgreSQL service
+      ansible.builtin.systemd:
+        name: postgresql
+        enabled: yes
+        state: started
 
-    - name: Block Install PostgreSQL
-      block:
-        - name: Install PostgreSQL
-          apt:
-            name:
-              - postgresql
-              - postgresql-contrib
-            state: present
-          become: true
+    # pgAdmin4
+    - name: Install pgAdmin4 dependencies
+      ansible.builtin.apt:
+        name:
+          - curl
+          - gnupg2
+          - lsb-release
+          - software-properties-common
+          - dirmngr
+          - sqlite3
+        state: present
 
-        - name: Configure postgresql.conf for listen_addresses
-          ansible.builtin.lineinfile:
-            path: /etc/postgresql/14/main/postgresql.conf
-            line: "listen_addresses = '*'"
-            regexp: "^#listen_addresses = 'localhost'"
-            backrefs: yes
-          diff: yes
+    - name: Install the public key for the repository
+      ansible.builtin.shell:
+        cmd: curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
 
-        - name: Configure pg_hba.conf for md5 auth
-          ansible.builtin.shell:
-            cmd: |
-              PSQL_IP=$(ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}') && echo "host all all ${PSQL_IP}/32 md5" >> /etc/postgresql/14/main/pg_hba.conf
-              APACHE_IP=$(cat /mnt/apache.txt) && echo "host   all   all   ${APACHE_IP}/32   md5" >> /etc/postgresql/14/main/pg_hba.conf
-          diff: yes
+    - name: Create the repository configuration file
+      ansible.builtin.shell:
+        cmd: sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
 
-        - name: Restart PostgreSQL service
-          ansible.builtin.systemd:
-            name: postgresql
-            state: restarted
+    - name: Install pgAdmin4
+      ansible.builtin.apt:
+        name: pgadmin4
+        state: present
 
-        - name: Enable PostgreSQL service
-          ansible.builtin.systemd:
-            name: postgresql
-            enabled: yes
-            state: started
+    - name: "/usr/pgadmin4/bin/setup-web.sh --yes"
+      run_once: true
+      ansible.builtin.command:
+        cmd: "/usr/pgadmin4/bin/setup-web.sh --yes"
+      environment:
+        PGADMIN_SETUP_EMAIL: "psql@psql.com"
+        PGADMIN_SETUP_PASSWORD: "123456"
 
-    - name: Block Install pgAdmin4
-      block:
-        - name: Install pgAdmin4 dependencies
-          ansible.builtin.apt:
-            name:
-              - curl
-              - gnupg2
-              - lsb-release
-              - software-properties-common
-              - dirmngr
-              - sqlite3
-            state: present
+    # Security
+    - name: Install and configure fail2ban
+      ansible.builtin.apt:
+        name: fail2ban
+        state: present
 
-        - name: Install the public key for the repository
-          ansible.builtin.shell:
-            cmd: curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+    - name: Enable fail2ban service
+      ansible.builtin.systemd:
+        name: fail2ban
+        enabled: yes
+        state: started
 
-        - name: Create the repository configuration file
-          ansible.builtin.shell:
-            cmd: sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+    - name: Install UFW
+      ansible.builtin.apt:
+        name: ufw
+        state: present
 
-        - name: Install pgAdmin4
-          ansible.builtin.apt:
-            name: pgadmin4
-            state: present
+    - name: Configure UFW rules
+      ansible.builtin.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: tcp
+      loop:
+        - "ssh"
+        - "5432" # PostgreSQL
+        - "80" # HTTP
+        - "443" # HTTPS
 
-        - name: "/usr/pgadmin4/bin/setup-web.sh --yes"
-          run_once: true
-          ansible.builtin.command:
-            cmd: "/usr/pgadmin4/bin/setup-web.sh --yes"
-          environment:
-            PGADMIN_SETUP_EMAIL: "psql@psql.com"
-            PGADMIN_SETUP_PASSWORD: "123456"
-
-    - name: Security
-      block:
-        - name: Install and configure fail2ban
-          ansible.builtin.apt:
-            name: fail2ban
-            state: present
-
-        - name: Enable fail2ban service
-          ansible.builtin.systemd:
-            name: fail2ban
-            enabled: yes
-            state: started
-
-        - name: Install UFW
-          ansible.builtin.apt:
-            name: ufw
-            state: present
-
-        - name: Configure UFW rules
-          ansible.builtin.ufw:
-            rule: allow
-            port: "{{ item }}"
-            proto: tcp
-          loop:
-            - "ssh"
-            - "5432" # PostgreSQL
-            - "80" # HTTP
-            - "443" # HTTPS
-
-        - name: Enable UFW with default deny policy
-          ansible.builtin.ufw:
-            state: enabled
-            policy: deny
+    - name: Enable UFW with default deny policy
+      ansible.builtin.ufw:
+        state: enabled
+        policy: deny

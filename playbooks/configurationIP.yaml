@@ -1,85 +1,11 @@
 ---
-- name: Install and configure Apache2
+- name: Share IP through mnt
   hosts: localhost
   connection: local
   become: true
 
   tasks:
-    # Setup
     - name: Set IP address to mnt
       ansible.builtin.shell:
         cmd: |
           ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
-
-    # Package management
-    - name: Update and upgrade apt packages
-      apt:
-        update_cache: yes
-        upgrade: yes
-        cache_valid_time: 3600
-
-    - name: Install security packages
-      apt:
-        name:
-          - fail2ban
-          - ufw
-          - certbot
-        state: latest
-
-    - name: Install python packages
-      apt:
-        name:
-          - python3-certbot-apache
-          - python3-pip
-          - python3.10-venv
-        state: latest
-
-    # Web server
-    - name: Install apache2
-      apt:
-        name:
-          - apache2
-        state: latest
-
-    - name: Enable and start Apache2
-      systemd:
-        name: apache2
-        enabled: yes
-        state: started
-
-    # Security
-    - name: Disable password authentication for SSH
-      copy:
-        dest: /etc/ssh/sshd_config.d/disable-passwords.conf
-        content: |
-          PasswordAuthentication no
-        owner: root
-        group: root
-        mode: "0644"
-
-    - name: Restart SSHD to apply config
-      systemd:
-        name: sshd
-        state: restarted
-
-    - name: Enable fail2ban service
-      ansible.builtin.systemd:
-        name: fail2ban
-        enabled: yes
-        state: started
-
-    - name: Configure UFW rules
-      ansible.builtin.ufw:
-        rule: allow
-        port: "{{ item }}"
-        proto: tcp
-      loop:
-        - "ssh"
-        - "80" # HTTP
-        - "443" # HTTPS
-        - "5000" # Flask
-
-    - name: Enable UFW with default deny policy
-      ansible.builtin.ufw:
-        state: enabled
-        policy: deny

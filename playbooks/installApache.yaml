@@ -5,12 +5,6 @@
   become: true
 
   tasks:
-    # Setup
-    - name: Set IP address to mnt
-      ansible.builtin.shell:
-        cmd: |
-          ip -4 addr show enp0s8 | grep -oP '(?<=inet\s)\d+(\.\d+){3}' > /mnt/$(hostname).txt
-
     # Package management
     - name: Update and upgrade apt packages
       apt:
