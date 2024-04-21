@@ -32,6 +32,13 @@ sudo apt install ansible -y
 git clone https://github.com/alysondsouza/FlaskWebApp.git
 ```
 
+Share IP between multipass instances "apache" and "psql":
+```
+ansible-playbook FlaskWebApp/playbooks/configurationIP.yaml
+```
+> STOP: <br>
+`follow setup of postgres until you reach this same point before proceeding`
+
 Run the Ansible playbooks:
 ```
 ansible-playbook FlaskWebApp/playbooks/gitProjectSetup.yaml
@@ -70,6 +77,13 @@ Install Ansible and clone the FlaskWebApp repository:
 sudo apt install ansible -y
 git clone https://github.com/alysondsouza/FlaskWebApp.git
 ```
+
+Share IP between multipass instances "apache" and "psql":
+```
+ansible-playbook FlaskWebApp/playbooks/configurationIP.yaml
+```
+> STOP: <br>
+`follow setup of apache until you reach this same point before proceeding`
 
 Run the Ansible playbooks to set up PostgreSQL and pgAdmin:
 ```
