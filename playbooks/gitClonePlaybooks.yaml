@@ -6,17 +6,17 @@
   tasks:
     - name: Create playbooks directory
       file:
-        path: home/ubuntu/playbooks/
+        path: /home/ubuntu/playbooks/
         state: directory
 
     - name: Copy the cloned project to /playbooks
       ansible.builtin.copy:
-        src: home/ubuntu/FlaskWebApp/playbooks/
-        dest: home/ubuntu/playbooks/
+        src: /home/ubuntu/FlaskWebApp/playbooks/
+        dest: /home/ubuntu/playbooks/
         owner: root
         group: root
 
     - name: Remove FlaskWebApp directory
       file:
-        path: ~/FlaskWebApp
+        path: /home/ubuntu/FlaskWebApp
         state: absent
