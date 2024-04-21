@@ -6,13 +6,13 @@
   tasks:
     - name: Create folder playbooks/
       file:
-        path: /playbooks/
+        path: ~/playbooks/
         state: directory
 
-    - name: Copy the cloned project to /var/www
+    - name: Copy the cloned project to playbooks/
       ansible.builtin.copy:
-        src: ~/FlaskWebApp/
-        dest: /playbooks/
+        src: ~/FlaskWebApp/playbooks/
+        dest: ~/playbooks/
         owner: root
         group: root
 
