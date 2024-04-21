@@ -2,12 +2,12 @@
   hosts: localhost
   gather_facts: yes
   tasks:
-    - name: Create folder playbooks/
+    - name: Ensure playbooks directory exists
       file:
         path: "/home/ubuntu/playbooks"
         state: directory
 
-    - name: Copy the cloned project to playbooks/
+    - name: Copy the cloned project to playbooks directory
       copy:
         src: "/home/ubuntu/FlaskWebApp/"
         dest: "/home/ubuntu/playbooks/"
@@ -17,7 +17,3 @@
       file:
         path: "/home/ubuntu/FlaskWebApp"
         state: absent
-
-    - name: Additional operations on the playbooks directory
-      debug:
-        msg: "Perform operations here, ensuring /home/ubuntu/FlaskWebApp is no longer referenced."
