@@ -108,3 +108,9 @@ Database connection details:
 * Port: 5432
 * Username: postgres
 * Password: 123456
+
+
+## Apache and Postgres
+
+![Apache Webserver](apache.png)
+![PostgreSQL](psql.png)
