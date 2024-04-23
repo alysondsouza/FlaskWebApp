@@ -87,10 +87,12 @@ fetch(`${baseUrl}/cities.json`)
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
+  // Get the values from the form
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
 
+  // Send the request to the server
   fetch(`${baseUrl}/create_city`, {
     method: "POST",
     headers: {
@@ -101,23 +103,23 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        // Create the success message with the new city details
-        document.getElementById(
-          "createMessage"
-        ).textContent = `New Entry Created: City - ${data.city}, Country: ${data.country}, Population: ${data.population}`;
-        // Show the result container for the create action
-        document.getElementById("createResultContainer").style.display =
-          "block";
+        // Get the table body where new rows will be added
+        const tableBody = document
+          .getElementById("citiesTable")
+          .getElementsByTagName("tbody")[0];
+        let newRow = tableBody.insertRow();
+        newRow.innerHTML = `
+          <td>${tableBody.rows.length}</td>
+          <td>${data.city}</td>
+          <td>${data.country}</td>
+          <td>${data.population.toLocaleString()}</td>
+        `;
       } else {
-        document.getElementById("createMessage").textContent =
-          "Error: City not added";
-        document.getElementById("createResultContainer").style.display =
-          "block";
+        console.error("City not added");
       }
     })
     .catch((error) => {
-      document.getElementById("createMessage").textContent = `Error: ${error}`;
-      document.getElementById("createResultContainer").style.display = "block";
+      console.error("Error:", error);
     });
 });
 
@@ -165,6 +167,8 @@ document
   .getElementById("deleteFunctionButton")
   .addEventListener("click", function () {
     const cityId = document.getElementById("deleteInput").value.trim();
+
+    // Send the request to the server
     if (cityId !== "") {
       fetch(`${baseUrl}/delete_city?id=${cityId}`, {
         method: "DELETE",
@@ -172,22 +176,20 @@ document
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            document.getElementById(
-              "deleteMessage"
-            ).textContent = `Success: ${data.details}`;
-            document.getElementById("deleteResultContainer").style.display =
-              "block";
+            // Get the table and find the row with the matching city ID
+            const table = document.getElementById("citiesTable");
+            for (let i = 0; i < table.rows.length; i++) {
+              if (table.rows[i].cells[0].textContent === cityId) {
+                table.deleteRow(i);
+                break;
+              }
+            }
           } else {
-            document.getElementById("deleteMessage").textContent = data.error;
-            document.getElementById("deleteResultContainer").style.display =
-              "block";
+            console.error(data.error);
           }
         })
         .catch((error) => {
-          document.getElementById("deleteMessage").textContent =
-            "Error: " + error;
-          document.getElementById("deleteResultContainer").style.display =
-            "block";
+          console.error("Error:", error);
         });
     }
   });

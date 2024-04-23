@@ -132,6 +132,41 @@
     <div class="alert alert-success" role="alert" id="deleteMessage"></div>
 </div>
 
+
+<!-- Create/Add Result container -->
+<div id="addResultContainer" class="container neumorphism" style="display:none;">
+    <table class="table table-bordered table-striped" id="addResultTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Population</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Newly added city will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete Result container -->
+<div id="deleteResultContainer" class="container neumorphism" style="display:none;">
+    <table class="table table-bordered table-striped" id="deleteResultTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Population</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Deleted city will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
 <script src="{{ url_for('static', filename='script.js') }}"></script> <!-- Link to the external JavaScript file -->
 <script src="script.js"></script> <!-- Link to the external JavaScript file -->
 </body>
