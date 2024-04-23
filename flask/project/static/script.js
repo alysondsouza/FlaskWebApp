@@ -87,12 +87,10 @@ fetch(`${baseUrl}/cities.json`)
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  // Get form data
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
 
-  // Post to server
   fetch(`${baseUrl}/create_city`, {
     method: "POST",
     headers: {
@@ -103,29 +101,24 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        const addResultBody = document
-          .getElementById("addResultTable")
-          .getElementsByTagName("tbody")[0];
-        const newRow = addResultBody.insertRow();
-        newRow.innerHTML = `
-          <td>${data.id}</td>
+        // Add the new city to the main cities table
+        const mainTableBody = document
+          .getElementById("citiesTable")
+          .querySelector("tbody");
+        let newMainRow = mainTableBody.insertRow(-1); // Insert at the end of the table
+        newMainRow.innerHTML = `
+          <td>${mainTableBody.rows.length}</td>
           <td>${data.city}</td>
           <td>${data.country}</td>
-          <td>${data.population.toLocaleString()}</td>
+          <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-        // Display the add result container
-        document.getElementById("addResultContainer").style.display = "block";
 
-        // Optionally, clear the form fields and hide the result container after some time
+        // Clear form fields
         document.getElementById("cityName").value = "";
         document.getElementById("countryName").value = "";
         document.getElementById("populationCount").value = "";
-        setTimeout(() => {
-          document.getElementById("addResultContainer").style.display = "none";
-        }, 3000); // Hide after 3 seconds
       } else {
-        // Handle error
-        console.error("City not added:", data.error);
+        console.error("City not added: ", data.error);
       }
     })
     .catch((error) => {
@@ -185,18 +178,20 @@ document
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            // Find and remove the city from the table
-            const table = document.getElementById("citiesTable");
-            for (let i = 0; i < table.rows.length; i++) {
-              if (table.rows[i].cells[0].textContent === cityId) {
-                table.deleteRow(i);
-                break;
+            const mainTableBody = document
+              .getElementById("citiesTable")
+              .querySelector("tbody");
+            // Assuming your city ID is in the first column of the table
+            [...mainTableBody.rows].forEach((row, index) => {
+              if (row.cells[0].textContent == cityId) {
+                mainTableBody.deleteRow(index);
               }
-            }
-            // Optionally, display a success message or remove the deleted city from the display
+            });
+
+            // Clear the delete input field
+            document.getElementById("deleteInput").value = "";
           } else {
-            // Handle error
-            console.error(data.error);
+            console.error("Error: ", data.error);
           }
         })
         .catch((error) => {
