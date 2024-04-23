@@ -184,8 +184,7 @@ searchFunctionButton.addEventListener("click", (e) => {
 });
 
 function performSearch(query) {
-  // You may need to adjust the endpoint as per your API
-  fetch(`${baseUrl}/search?query=${query}`)
+  fetch(`${baseUrl}/read_city?query=${query}`)
     .then((response) => response.json())
     .then((data) => {
       updateResults(data);
@@ -196,7 +195,6 @@ function performSearch(query) {
 }
 
 function updateResults(data) {
-  // Assuming data is an array of search results
   const resultBody = resultContainer.getElementsByTagName("tbody")[0];
   resultBody.innerHTML = ""; // Clear previous results
 
@@ -207,13 +205,11 @@ function updateResults(data) {
       let newRow = resultBody.insertRow();
       newRow.innerHTML = `
         <td>${index + 1}</td>
-        <td>${item.city}</td>
+        <td>${item.name}</td>
         <td>${item.country}</td>
         <td>${item.population.toLocaleString()}</td>
       `;
     });
   }
-
-  // Display the results container
   resultContainer.style.display = "block";
 }
