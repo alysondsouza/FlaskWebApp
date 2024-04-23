@@ -87,12 +87,12 @@ fetch(`${baseUrl}/cities.json`)
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  // Get the values from the form
+  // Get form data
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
 
-  // Send the request to the server
+  // Post to server
   fetch(`${baseUrl}/create_city`, {
     method: "POST",
     headers: {
@@ -103,19 +103,29 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        // Get the table body where new rows will be added
-        const tableBody = document
-          .getElementById("citiesTable")
+        const addResultBody = document
+          .getElementById("addResultTable")
           .getElementsByTagName("tbody")[0];
-        let newRow = tableBody.insertRow();
+        const newRow = addResultBody.insertRow();
         newRow.innerHTML = `
-          <td>${tableBody.rows.length}</td>
+          <td>${data.id}</td>
           <td>${data.city}</td>
           <td>${data.country}</td>
           <td>${data.population.toLocaleString()}</td>
         `;
+        // Display the add result container
+        document.getElementById("addResultContainer").style.display = "block";
+
+        // Optionally, clear the form fields and hide the result container after some time
+        document.getElementById("cityName").value = "";
+        document.getElementById("countryName").value = "";
+        document.getElementById("populationCount").value = "";
+        setTimeout(() => {
+          document.getElementById("addResultContainer").style.display = "none";
+        }, 3000); // Hide after 3 seconds
       } else {
-        console.error("City not added");
+        // Handle error
+        console.error("City not added:", data.error);
       }
     })
     .catch((error) => {
@@ -168,7 +178,6 @@ document
   .addEventListener("click", function () {
     const cityId = document.getElementById("deleteInput").value.trim();
 
-    // Send the request to the server
     if (cityId !== "") {
       fetch(`${baseUrl}/delete_city?id=${cityId}`, {
         method: "DELETE",
@@ -176,7 +185,7 @@ document
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            // Get the table and find the row with the matching city ID
+            // Find and remove the city from the table
             const table = document.getElementById("citiesTable");
             for (let i = 0; i < table.rows.length; i++) {
               if (table.rows[i].cells[0].textContent === cityId) {
@@ -184,7 +193,9 @@ document
                 break;
               }
             }
+            // Optionally, display a success message or remove the deleted city from the display
           } else {
+            // Handle error
             console.error(data.error);
           }
         })
