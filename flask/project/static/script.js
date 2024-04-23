@@ -86,7 +86,7 @@ fetch(`${baseUrl}/cities.json`)
 
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
-
+  // Get the values from the form
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
@@ -101,22 +101,29 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        // Add the new city to the main cities table
+        // Add to the main cities table
         const mainTableBody = document
           .getElementById("citiesTable")
-          .querySelector("tbody");
-        let newMainRow = mainTableBody.insertRow(-1); // Insert at the end of the table
-        newMainRow.innerHTML = `
-          <td>${mainTableBody.rows.length}</td>
+          .getElementsByTagName("tbody")[0];
+        const newRow = mainTableBody.insertRow();
+        newRow.innerHTML = `
+          <td>${data.id}</td>
           <td>${data.city}</td>
           <td>${data.country}</td>
           <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-
-        // Clear form fields
-        document.getElementById("cityName").value = "";
-        document.getElementById("countryName").value = "";
-        document.getElementById("populationCount").value = "";
+        // Also, show it in the add result table
+        const addResultBody = document
+          .getElementById("addResultTable")
+          .getElementsByTagName("tbody")[0];
+        const newRowInAddResult = addResultBody.insertRow();
+        newRowInAddResult.innerHTML = `
+          <td>${data.id}</td>
+          <td>${data.city}</td>
+          <td>${data.country}</td>
+          <td>${parseInt(data.population).toLocaleString()}</td>
+        `;
+        document.getElementById("addResultContainer").style.display = "block";
       } else {
         console.error("City not added: ", data.error);
       }
@@ -170,26 +177,37 @@ document
   .getElementById("deleteFunctionButton")
   .addEventListener("click", function () {
     const cityId = document.getElementById("deleteInput").value.trim();
-
     if (cityId !== "") {
       fetch(`${baseUrl}/delete_city?id=${cityId}`, {
         method: "DELETE",
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.success) {
+          if (data.city) {
+            // Remove the city from the main cities table
             const mainTableBody = document
               .getElementById("citiesTable")
-              .querySelector("tbody");
-            // Assuming your city ID is in the first column of the table
+              .getElementsByTagName("tbody")[0];
             [...mainTableBody.rows].forEach((row, index) => {
-              if (row.cells[0].textContent == cityId) {
+              if (row.cells[0].textContent == data.city.id.toString()) {
                 mainTableBody.deleteRow(index);
               }
             });
 
-            // Clear the delete input field
-            document.getElementById("deleteInput").value = "";
+            // Display deleted city details in the deleteResultContainer table
+            const deleteResultBody = document
+              .getElementById("deleteResultTable")
+              .getElementsByTagName("tbody")[0];
+            deleteResultBody.innerHTML = ""; // Clear previous result
+            const newRow = deleteResultBody.insertRow();
+            newRow.innerHTML = `
+            <td>${data.city.id}</td>
+            <td>${data.city.city}</td>
+            <td>${data.city.country}</td>
+            <td>${parseInt(data.city.population).toLocaleString()}</td>
+          `;
+            document.getElementById("deleteResultContainer").style.display =
+              "block";
           } else {
             console.error("Error: ", data.error);
           }
