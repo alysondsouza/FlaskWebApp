@@ -100,10 +100,24 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log("Success:", data);
+      if (data.id) {
+        // Create the success message with the new city details
+        document.getElementById(
+          "createMessage"
+        ).textContent = `New Entry Created: City - ${data.city}, Country: ${data.country}, Population: ${data.population}`;
+        // Show the result container for the create action
+        document.getElementById("createResultContainer").style.display =
+          "block";
+      } else {
+        document.getElementById("createMessage").textContent =
+          "Error: City not added";
+        document.getElementById("createResultContainer").style.display =
+          "block";
+      }
     })
     .catch((error) => {
-      console.error("Error:", error);
+      document.getElementById("createMessage").textContent = `Error: ${error}`;
+      document.getElementById("createResultContainer").style.display = "block";
     });
 });
 
@@ -157,10 +171,17 @@ document
       })
         .then((response) => response.json())
         .then((data) => {
-          document.getElementById("deleteMessage").textContent =
-            "Success: City deleted successfully.";
-          document.getElementById("deleteResultContainer").style.display =
-            "block";
+          if (data.success) {
+            document.getElementById(
+              "deleteMessage"
+            ).textContent = `Success: ${data.details}`;
+            document.getElementById("deleteResultContainer").style.display =
+              "block";
+          } else {
+            document.getElementById("deleteMessage").textContent = data.error;
+            document.getElementById("deleteResultContainer").style.display =
+              "block";
+          }
         })
         .catch((error) => {
           document.getElementById("deleteMessage").textContent =

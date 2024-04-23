@@ -71,23 +71,6 @@
     <button type="submit" id="searchFunctionButton" class="btn btn-primary">Search</button>
 </div>
 
-<!-- Result container -->
-<div id="resultContainer" class="container neumorphism" style="display:none;">
-    <table class="table table-bordered table-striped" id="resultTable">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>City</th>
-                <th>Country</th>
-                <th>Population</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Search results will be inserted here dynamically -->
-        </tbody>
-    </table>
-</div>
-
 <!-- Update container -->
 <div class="update-container neumorphism" style="display:none;">
     <form id="updateCityForm">
@@ -111,15 +94,37 @@
     </form>
 </div>
 
-<!-- Update result container -->
-<div id="updateResultContainer" class="container neumorphism" style="display:none;">
-    <div class="alert alert-success" role="alert" id="updateMessage"></div>
-</div>
-
 <!-- Delete container -->
 <div class="delete-container neumorphism" style="display:none;">
     <input type="text" id="deleteInput" placeholder="Enter city ID to delete..." class="form-control">
     <button type="submit" id="deleteFunctionButton" class="btn btn-primary btn-danger">Delete</button>
+</div>
+
+<!-- Result container -->
+<div id="resultContainer" class="container neumorphism" style="display:none;">
+    <table class="table table-bordered table-striped" id="resultTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Population</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Search results will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Create result container -->
+<div id="createResultContainer" class="container neumorphism" style="display:none;">
+    <div class="alert alert-success" role="alert" id="createMessage"></div>
+</div>
+
+<!-- Update result container -->
+<div id="updateResultContainer" class="container neumorphism" style="display:none;">
+    <div class="alert alert-success" role="alert" id="updateMessage"></div>
 </div>
 
 <!-- Result container for delete -->

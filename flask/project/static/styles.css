@@ -17,7 +17,7 @@ h2 {
     border-radius: 20px;
     box-shadow: 8px 8px 15px #a3b1c6, -8px -8px 15px #ffffff;
     padding: 20px;
-    margin-bottom: 20px;
+    margin: 20px;
 }
 
 /* Layout styling for the header container */
@@ -86,6 +86,7 @@ h2 {
 .container, .form-container, .update-container, .delete-container, .search-container {
     max-width: 600px;
     margin: auto;
+    margin-top: 20px;
 }
 
 /* Flexbox layout for the search container */

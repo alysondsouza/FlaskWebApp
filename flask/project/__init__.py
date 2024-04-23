@@ -105,16 +105,20 @@ def delete_city():
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            # Ensure the city exists before trying to delete
-            cursor.execute("SELECT EXISTS(SELECT 1 FROM cities WHERE id=%s)", (city_id,))
-            exists = cursor.fetchone()[0]
-            if not exists:
+            # Retrieve city details before deletion
+            cursor.execute("SELECT city, country FROM cities WHERE id=%s", (city_id,))
+            city_details = cursor.fetchone()
+            if not city_details:
                 return jsonify({"error": "City not found"}), 404
             
             # If the city exists, proceed to delete
-            cursor.execute("DELETE FROM cities WHERE id=%s", (city_id,))
+            cursor.execute("DELETE FROM cities WHERE id=%s RETURNING *", (city_id,))
+            deleted_city = cursor.fetchone()
             conn.commit()
-            return jsonify({"success": "City deleted successfully"}), 200
+            if deleted_city:
+                return jsonify({"success": "City deleted successfully.", "details": f"City {city_details['city']} from {city_details['country']} was deleted."}), 200
+            else:
+                return jsonify({"error": "City not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
