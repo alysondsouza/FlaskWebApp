@@ -188,6 +188,25 @@ h2 {
     background-color: #e0a800;
 }
 
+/* Add the following CSS rules */
+
+/* Pale blue color for Add button */
+#AddFunctionButton {
+    background-color: #add8e6; /* pale blue */
+    color: #000000; /* text color */
+}
+
+/* Pale green color for Search button */
+#searchFunctionButton {
+    background-color: #cfdb9e; /* pale green */
+    color: #000000; /* text color */
+}
+
+/* Ensure the hover effect is consistent with the pale colors */
+#AddFunctionButton:hover, #searchFunctionButton:hover {
+    opacity: 0.8; /* slightly transparent on hover */
+}
+
 /* Margin for form groups */
 .form-group {
     margin-bottom: 20px;
