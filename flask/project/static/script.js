@@ -2,12 +2,15 @@ const app_port = 5000;
 const baseUrl = `http://127.0.0.1:${app_port}`;
 
 const homeButton = document.getElementById("homeButton");
-const searchButton = document.getElementById("searchButton");
+const readButton = document.getElementById("readButton");
 const searchFunctionButton = document.getElementById("searchFunctionButton");
-const addButton = document.getElementById("addButton");
-const changeButton = document.getElementById("changeButton");
+const createButton = document.getElementById("createButton");
+const updateButton = document.getElementById("updateButton");
+const deleteButton = document.getElementById("deleteButton");
 const tableContainer = document.querySelector(".container");
 const searchContainer = document.querySelector(".search-container");
+const updateContainer = document.querySelector(".update-container");
+const deleteContainer = document.querySelector(".delete-container");
 const resultContainer = document.getElementById("resultContainer");
 const addContainer = document.querySelector(".form-container");
 
@@ -16,6 +19,8 @@ function hideAllContainers() {
   searchContainer.style.display = "none";
   resultContainer.style.display = "none";
   addContainer.style.display = "none";
+  updateContainer.style.display = "none";
+  deleteContainer.style.display = "none";
 }
 
 homeButton.addEventListener("click", () => {
@@ -23,7 +28,7 @@ homeButton.addEventListener("click", () => {
   tableContainer.style.display = "block";
 });
 
-searchButton.addEventListener("click", () => {
+readButton.addEventListener("click", () => {
   hideAllContainers();
   searchContainer.style.display = "block";
 });
@@ -40,14 +45,19 @@ searchFunctionButton.addEventListener("click", () => {
   resultContainer.style.display = "block";
 });
 
-addButton.addEventListener("click", () => {
+createButton.addEventListener("click", () => {
   hideAllContainers();
   addContainer.style.display = "block";
 });
 
-changeButton.addEventListener("click", () => {
+updateButton.addEventListener("click", () => {
   hideAllContainers();
-  // Add functionality here
+  updateContainer.style.display = "block";
+});
+
+deleteButton.addEventListener("click", () => {
+  hideAllContainers();
+  deleteContainer.style.display = "block";
 });
 
 window.onload = () => {
@@ -81,7 +91,7 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
 
-  fetch(`${baseUrl}/add_city`, {
+  fetch(`${baseUrl}/create_city`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -98,45 +108,65 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
 });
 
 document
-  .getElementById("searchFunctionButton")
-  .addEventListener("click", function () {
-    const searchValue = document
-      .getElementById("searchInput")
-      .value.trim()
-      .toLowerCase();
-    const resultTableBody = document
-      .getElementById("resultTable")
-      .getElementsByTagName("tbody")[0];
+  .getElementById("updateCityForm")
+  .addEventListener("submit", function (e) {
+    e.preventDefault();
+    const id = document.getElementById("updateCityId").value;
+    const city = document.getElementById("updateCityName").value;
+    const country = document.getElementById("updateCountryName").value;
+    const population = document.getElementById("updatePopulationCount").value;
 
-    fetch(`${baseUrl}/cities.json`)
+    fetch(`${baseUrl}/update_city`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, city, country, population }),
+    })
       .then((response) => response.json())
       .then((data) => {
-        resultTableBody.innerHTML = "";
-        const filteredData = data.filter((city) =>
-          city.name.toLowerCase().includes(searchValue)
-        );
-
-        if (filteredData.length > 0) {
-          filteredData.forEach((item, index) => {
-            let newRow = resultTableBody.insertRow();
-            newRow.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${item.name}</td>
-          <td>${item.country}</td>
-          <td>${item.population.toLocaleString()}</td>
-        `;
-          });
-          document.getElementById("resultContainer").style.display = "block";
+        if (data.id) {
+          document.getElementById(
+            "updateMessage"
+          ).textContent = `Success: Updated City - ID: ${data.id}, Name: ${data.city}, Country: ${data.country}, Population: ${data.population}`;
+          document.getElementById("updateResultContainer").style.display =
+            "block";
         } else {
-          resultTableBody.innerHTML =
-            '<tr><td colspan="4">No match found</td></tr>';
-          document.getElementById("resultContainer").style.display = "block";
+          document.getElementById("updateMessage").textContent =
+            "Error: City not updated";
+          document.getElementById("updateResultContainer").style.display =
+            "block";
         }
       })
       .catch((error) => {
-        console.error("Error:", error);
-        resultTableBody.innerHTML =
-          '<tr><td colspan="4">Error fetching data</td></tr>';
-        document.getElementById("resultContainer").style.display = "block";
+        document.getElementById(
+          "updateMessage"
+        ).textContent = `Error: ${error}`;
+        document.getElementById("updateResultContainer").style.display =
+          "block";
       });
+  });
+
+document
+  .getElementById("deleteFunctionButton")
+  .addEventListener("click", function () {
+    const cityId = document.getElementById("deleteInput").value.trim();
+    if (cityId !== "") {
+      fetch(`${baseUrl}/delete_city?id=${cityId}`, {
+        method: "DELETE",
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("deleteMessage").textContent =
+            "Success: City deleted successfully.";
+          document.getElementById("deleteResultContainer").style.display =
+            "block";
+        })
+        .catch((error) => {
+          document.getElementById("deleteMessage").textContent =
+            "Error: " + error;
+          document.getElementById("deleteResultContainer").style.display =
+            "block";
+        });
+    }
   });

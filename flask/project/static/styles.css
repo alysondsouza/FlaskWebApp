@@ -1,17 +1,17 @@
-/* Main body styling */
+/* Base styling for the body */
 body {
     background-color: #e0e5ec;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Styling for headings */
+/* Styling for main headings */
 h2 {
     text-align: center;
     margin-bottom: 20px;
     color: #333;
 }
 
-/* Neumorphic design for containers */
+/* General container styling with neumorphism effect */
 .neumorphism {
     background: #e0e5ec;
     border-radius: 20px;
@@ -20,35 +20,36 @@ h2 {
     margin-bottom: 20px;
 }
 
-/* Header container */
+/* Layout styling for the header container */
 .header-container {
     display: flex;
-    flex-wrap: wrap; /* Allows wrapping on small screens */
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
 }
 
-/* Logo styling */
+/* Styling for the header logo */
 .header-logo {
     height: 50px;
     width: auto;
 }
 
-/* Navigation container */
+/* Flexbox layout for the navigation container */
 .navigation {
     display: flex;
-    flex-wrap: wrap; /* Wraps navigation items on small screens */
-    justify-content: center; /* Centering on small screens */
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
+/* Focus state for navigation buttons */
 .nav-button:focus, .btn-primary:focus {
-    background: #a3b1c6; /* Darker shade for button focus */
-    outline: none; /* Remove the default focus outline */
-    box-shadow: none; /* Removes additional contour shape */
+    background: #a3b1c6;
+    outline: none;
+    box-shadow: none;
 }
 
-/* Button styling */
+/* Base styling for navigation buttons */
 .nav-button, .btn-primary {
     background: #e0e5ec;
     border: none;
@@ -60,105 +61,172 @@ h2 {
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1rem;
-    width: 100%; /* Full width for better mobile interaction */
+    width: 100%;
 }
 
-/* Hover effect for buttons */
+/* Hover state for navigation buttons */
 .nav-button:hover, .btn-primary:hover {
     background: #cfd9df;
 }
 
-/* Button styling when selected to look pressed */
+/* Active state for navigation buttons */
 .nav-button:active, .btn-primary:active {
-    background: #a3b1c6; /* Darker shade for button press */
+    background: #a3b1c6;
     box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
-    outline: none; /* Remove the default focus outline */
 }
 
-/* Button styling when selected to look pressed */
+/* Selected button state for navigation buttons */
 .nav-button:focus, .btn-primary:focus,
 .nav-button.button-selected, .btn-primary.button-selected {
-    background: #e0e5ec; /* Keep the background color consistent */
-    box-shadow: inset 2px 2px 4px #b3c2d1, inset -2px -2px 4px #ffffff; /* Lighter shadow for a subtle pressed effect */
-    outline: none; /* Remove the default focus outline */
-}
-
-/* Adjusted button styling for better interaction */
-.nav-button, .btn-primary {
     background: #e0e5ec;
-    border: none;
-    border-radius: 25px;
-    box-shadow: 4px 4px 8px #a3b1c6, -4px -4px 8px #ffffff;
-    color: #333;
-    padding: 10px 20px;
-    margin-left: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    width: 100%; /* Full width for better mobile interaction */
+    box-shadow: inset 2px 2px 4px #b3c2d1, inset -2px -2px 4px #ffffff;
 }
 
-
-/* Container styling */
-.container, .search-container, .form-container {
-    width: 100%; /* Full width on small screens */
+/* Uniform container styling for sections with forms */
+.container, .form-container, .update-container, .delete-container, .search-container {
     max-width: 600px;
-    margin: 20px auto;
+    margin: auto;
 }
 
+/* Flexbox layout for the search container */
 .search-container {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
+/* Selected button styling for search function */
 .button-selected {
     box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
 }
 
+/* Margin correction for search function button */
 #searchFunctionButton {
+    margin-top: 1rem;
+}
+
+/* Styling for danger state buttons */
+.btn-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+/* Adjusted border styling for delete section */
+.delete-container, #deleteResultContainer {
+    border: none;
+    padding: 15px;
+}
+
+/* Hover state for danger buttons */
+.btn-danger:hover {
+    background: #e60000;
+}
+
+/* Active and focus state for danger buttons */
+.btn-danger:active, .btn-danger:focus {
+    background: #cc0000;
+    box-shadow: inset 2px 2px 4px #aa0000, inset -2px -2px 4px #ff1a1a;
+}
+
+/* Layout for delete container */
+.delete-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Styling for delete message alert */
+#deleteMessage {
+    color: #ffffff;
+    background-color: #ff4d4d;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 4px 4px 8px #cc3333, -4px -4px 8px #ff6666;
+}
+
+/* Styling for the alert messages */
+.alert {
+    text-align: center;
+    padding: 10px;
     margin-top: 10px;
+    border-radius: 5px;
+    color: #fff;
 }
 
-.button-selected {
-    box-shadow: inset 4px 4px 8px #a3b1c6, inset -4px -4px 8px #ffffff;
+/* Styling for success alert */
+.alert-success {
+    background-color: #28a745;
 }
 
-/* Form group styling */
+/* Styling for error alert */
+.alert-error {
+    background-color: #dc3545;
+}
+
+/* Layout for update section */
+.update-container, #updateResultContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Transition for form controls and warning buttons */
+.form-control, .btn-warning {
+    transition: all 0.3s ease;
+}
+
+/* Styling for warning buttons */
+.btn-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Hover state for warning buttons */
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+/* Margin for form groups */
 .form-group {
     margin-bottom: 20px;
 }
 
-/* Input field styling */
+/* Base styling for input fields */
 .form-control {
     background: transparent;
     border: none;
     border-radius: 8px;
     padding: 10px 15px;
     box-shadow: inset 8px 8px 15px #a3b1c6, inset -8px -8px 15px #ffffff;
-    outline: none; /* Removes the default focus outline */
-    width: 100%; /* Full width for form elements */
+    width: 100%;
 }
 
-/* Table styling */
+/* Styling for tables */
 .table {
     margin-top: 20px;
     border-collapse: separate;
     border-spacing: 0 15px;
 }
 
-/* Table cell styling */
+/* Styling for table cells */
 th, td {
     background: #e0e5ec;
     border-radius: 10px;
 }
 
-/* Media query for tablets and desktops */
+/* Responsive media queries for larger screens */
 @media (min-width: 768px) {
     .nav-button, .btn-primary {
-        width: auto; /* Revert to auto width for larger screens */
+        width: auto;
     }
     .header-container, .navigation {
-        padding: 10px 20px; /* Larger padding on bigger screens */
+        padding: 10px 20px;
     }
+}
+
+/* Focus styling for form controls and buttons */
+.form-control:focus, .btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
 }

@@ -46,8 +46,8 @@ def cities():
     except Exception as e:
         return jsonify(error=str(e)), 500
 
-@app.route('/add_city', methods=['POST'])
-def add_city():
+@app.route('/create_city', methods=['POST'])
+def create_city():
     data = request.json
     try:
         with get_db_connection() as conn:
@@ -60,17 +60,64 @@ def add_city():
     except Exception as e:
         return jsonify(error=str(e)), 500
 
-@app.route('/search_city', methods=['GET'])
-def search_city():
+@app.route('/read_city', methods=['GET'])
+def read_city():
     search_query = request.args.get('query', '').lower()
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cursor.execute("SELECT id, city, country, population FROM cities WHERE LOWER(city) LIKE %s", ('%'+search_query+'%',))
+            cursor.execute("SELECT id, city as name, country, population FROM cities WHERE LOWER(city) LIKE %s", ('%'+search_query+'%',))
             cities_list = cursor.fetchall()
             return jsonify([dict(city) for city in cities_list])
     except Exception as e:
+        app.logger.error('Database error: %s', str(e))
         return jsonify(error=str(e)), 500
+    
+@app.route('/update_city', methods=['PATCH'])
+def update_city():
+    data = request.json
+    city_id = data.get('id')
+    if not city_id:
+        return jsonify({"error": "City ID is required"}), 400
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE cities 
+                SET city=%s, country=%s, population=%s 
+                WHERE id=%s RETURNING id
+                """, (data['city'], data['country'], data['population'], city_id))
+            updated_id = cursor.fetchone()[0]
+            conn.commit()
+            if updated_id:
+                return jsonify({"id": updated_id, "city": data['city'], "country": data['country'], "population": data['population']}), 200
+            else:
+                return jsonify({"error": "City not updated"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/delete_city', methods=['DELETE'])
+def delete_city():
+    city_id = request.args.get('id')
+    if not city_id:
+        return jsonify({"error": "City ID is required"}), 400
+    
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            # Ensure the city exists before trying to delete
+            cursor.execute("SELECT EXISTS(SELECT 1 FROM cities WHERE id=%s)", (city_id,))
+            exists = cursor.fetchone()[0]
+            if not exists:
+                return jsonify({"error": "City not found"}), 404
+            
+            # If the city exists, proceed to delete
+            cursor.execute("DELETE FROM cities WHERE id=%s", (city_id,))
+            conn.commit()
+            return jsonify({"success": "City deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/test')
 def test():
