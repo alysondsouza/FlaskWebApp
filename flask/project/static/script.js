@@ -170,3 +170,50 @@ document
         });
     }
   });
+
+searchFunctionButton.addEventListener("click", (e) => {
+  e.preventDefault(); // Prevent the default form submission if it's within a form
+  const searchValue = document
+    .getElementById("searchInput")
+    .value.trim()
+    .toLowerCase();
+
+  if (searchValue !== "") {
+    performSearch(searchValue);
+  }
+});
+
+function performSearch(query) {
+  // You may need to adjust the endpoint as per your API
+  fetch(`${baseUrl}/search?query=${query}`)
+    .then((response) => response.json())
+    .then((data) => {
+      updateResults(data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+function updateResults(data) {
+  // Assuming data is an array of search results
+  const resultBody = resultContainer.getElementsByTagName("tbody")[0];
+  resultBody.innerHTML = ""; // Clear previous results
+
+  if (data.length === 0) {
+    resultBody.innerHTML = "<tr><td colspan='4'>No results found.</td></tr>";
+  } else {
+    data.forEach((item, index) => {
+      let newRow = resultBody.insertRow();
+      newRow.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${item.city}</td>
+        <td>${item.country}</td>
+        <td>${item.population.toLocaleString()}</td>
+      `;
+    });
+  }
+
+  // Display the results container
+  resultContainer.style.display = "block";
+}
