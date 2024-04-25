@@ -103,19 +103,19 @@
 <!-- Result container -->
 <div id="resultContainer" class="container neumorphism" style="display:none;">
     <table class="table table-bordered table-striped" id="resultTable">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>City</th>
-                <th>Country</th>
-                <th>Population</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Search results will be inserted here dynamically -->
-        </tbody>
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>City</th>
+          <th>Country</th>
+          <th>Population</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Update/Delete results will be inserted here dynamically -->
+      </tbody>
     </table>
-</div>
+  </div>
 
 <!-- Adjusted Add Result container -->
 <div id="addResultContainer" class="container neumorphism" style="display:none;">
@@ -132,22 +132,6 @@
             <!-- Newly added city will be inserted here dynamically -->
         </tbody>
     </table>
-</div>
-
-<!-- Update Result container -->
-<div id="updateResultContainer" class="container neumorphism" style="display:none;">
-    <div class="alert alert-success" role="alert">
-        City updated successfully.
-    </div>
-    <!-- You can add more details here if needed -->
-</div>
-
-<!-- Delete Result container -->
-<div id="deleteResultContainer" class="container neumorphism" style="display:none;">
-    <div class="alert alert-success" role="alert">
-        City deleted successfully.
-    </div>
-    <!-- You can add more details here if needed -->
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script> <!-- Link to the external JavaScript file -->

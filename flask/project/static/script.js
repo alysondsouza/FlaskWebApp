@@ -152,22 +152,10 @@ document
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
-          let rows = document
-            .getElementById("citiesTable")
-            .getElementsByTagName("tbody")[0].rows;
-          for (let i = 0; i < rows.length; i++) {
-            if (rows[i].cells[0].textContent == id) {
-              rows[i].cells[1].textContent = city;
-              rows[i].cells[2].textContent = country;
-              rows[i].cells[3].textContent =
-                parseInt(population).toLocaleString();
-              break;
-            }
-          }
           updateTableRow(data);
-          // Display update result container
-          document.getElementById("updateResultContainer").style.display =
-            "block";
+          // Update the resultContainer to show the updated city information
+          updateResults([data]);
+          document.getElementById("resultContainer").style.display = "block";
         } else {
           console.error("City not updated: ", data.error);
         }
@@ -187,20 +175,11 @@ document
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.city) {
-            let rows = document
-              .getElementById("citiesTable")
-              .getElementsByTagName("tbody")[0].rows;
-            for (let i = 0; i < rows.length; i++) {
-              if (rows[i].cells[0].textContent == cityId) {
-                rows[i].remove();
-                break;
-              }
-            }
-            deleteTableRow(cityId);
-            // Display delete result container
-            document.getElementById("deleteResultContainer").style.display =
-              "block";
+          if (data.id) {
+            deleteTableRow(data.id);
+            // Update the resultContainer to show the deleted city information
+            updateResults([data]);
+            document.getElementById("resultContainer").style.display = "block";
           } else {
             console.error("Error: ", data.error);
           }
@@ -235,29 +214,27 @@ function performSearch(query) {
 }
 
 function updateResults(data) {
-  const resultBody = resultContainer.getElementsByTagName("tbody")[0];
+  // This function now needs to handle both update and delete results,
+  // so it will display a table with the data passed to it
+  const resultBody = document
+    .getElementById("resultTable")
+    .querySelector("tbody");
   resultBody.innerHTML = ""; // Clear previous results
-
-  if (data.length === 0) {
-    resultBody.innerHTML = "<tr><td colspan='4'>No results found.</td></tr>";
-  } else {
-    data.forEach((item, index) => {
-      let newRow = resultBody.insertRow();
-      newRow.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${item.name}</td>
-        <td>${item.country}</td>
-        <td>${item.population.toLocaleString()}</td>
-      `;
-    });
-  }
-  resultContainer.style.display = "block";
+  data.forEach((item, index) => {
+    let newRow = resultBody.insertRow();
+    newRow.innerHTML = `
+      <td>${item.id}</td>
+      <td>${item.city}</td>
+      <td>${item.country}</td>
+      <td>${parseInt(item.population).toLocaleString()}</td>
+    `;
+  });
 }
 
 function updateTableRow(data) {
   let tableBody = document.getElementById("citiesTable").querySelector("tbody");
   let row = [...tableBody.rows].find(
-    (row) => row.cells[0].innerText == data.id
+    (row) => row.cells[0].textContent == data.id
   );
   if (row) {
     row.cells[1].textContent = data.city;
@@ -268,7 +245,9 @@ function updateTableRow(data) {
 
 function deleteTableRow(cityId) {
   let tableBody = document.getElementById("citiesTable").querySelector("tbody");
-  let row = [...tableBody.rows].find((row) => row.cells[0].innerText == cityId);
+  let row = [...tableBody.rows].find(
+    (row) => row.cells[0].textContent == cityId
+  );
   if (row) {
     tableBody.removeChild(row);
   }
