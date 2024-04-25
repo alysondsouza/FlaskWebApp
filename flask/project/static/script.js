@@ -135,6 +135,7 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .catch((error) => {
       console.error("Error:", error);
     });
+  this.reset();
 });
 
 document
