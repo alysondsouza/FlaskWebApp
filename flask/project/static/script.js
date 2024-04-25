@@ -12,6 +12,7 @@ const searchContainer = document.querySelector(".search-container");
 const updateContainer = document.querySelector(".update-container");
 const deleteContainer = document.querySelector(".delete-container");
 const resultContainer = document.getElementById("resultContainer");
+const addResultContainer = document.getElementById("addResultContainer");
 const addContainer = document.querySelector(".form-container");
 
 function hideAllContainers() {
@@ -21,6 +22,7 @@ function hideAllContainers() {
   addContainer.style.display = "none";
   updateContainer.style.display = "none";
   deleteContainer.style.display = "none";
+  addResultContainer.style.display = "none";
 }
 
 homeButton.addEventListener("click", () => {
