@@ -85,12 +85,12 @@ def update_city():
             cursor.execute("""
                 UPDATE cities 
                 SET city=%s, country=%s, population=%s 
-                WHERE id=%s RETURNING id
+                WHERE id=%s RETURNING *;
                 """, (data['city'], data['country'], data['population'], city_id))
-            updated_id = cursor.fetchone()[0]
+            updated_city = cursor.fetchone()
             conn.commit()
-            if updated_id:
-                return jsonify({"id": updated_id, "city": data['city'], "country": data['country'], "population": data['population']}), 200
+            if updated_city:
+                return jsonify(dict(updated_city)), 200
             else:
                 return jsonify({"error": "City not updated"}), 404
     except Exception as e:
@@ -101,21 +101,16 @@ def delete_city():
     city_id = request.args.get('id')
     if not city_id:
         return jsonify({"error": "City ID is required"}), 400
-    
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            
-            # Get the details before deletion
-            cursor.execute("SELECT * FROM cities WHERE id = %s", (city_id,))
-            city_details = cursor.fetchone()
-            if not city_details:
-                return jsonify({"error": "City not found"}), 404
-
-            # If the city exists, proceed to delete
-            cursor.execute("DELETE FROM cities WHERE id = %s RETURNING *", (city_id,))
+            cursor.execute("DELETE FROM cities WHERE id = %s RETURNING *;", (city_id,))
+            deleted_city = cursor.fetchone()
             conn.commit()
-            return jsonify({"success": "City deleted successfully", "city": dict(city_details)}), 200
+            if deleted_city:
+                return jsonify(dict(deleted_city)), 200
+            else:
+                return jsonify({"error": "City not found"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

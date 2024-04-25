@@ -152,24 +152,23 @@ document
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
-          document.getElementById(
-            "updateMessage"
-          ).textContent = `Success: Updated City - ID: ${data.id}, Name: ${data.city}, Country: ${data.country}, Population: ${data.population}`;
-          document.getElementById("updateResultContainer").style.display =
-            "block";
+          let rows = document.getElementById("citiesTable").rows;
+          for (let i = 0; i < rows.length; i++) {
+            if (rows[i].cells[0].textContent == data.id) {
+              rows[i].cells[1].textContent = data.city;
+              rows[i].cells[2].textContent = data.country;
+              rows[i].cells[3].textContent = parseInt(
+                data.population
+              ).toLocaleString();
+              break;
+            }
+          }
         } else {
-          document.getElementById("updateMessage").textContent =
-            "Error: City not updated";
-          document.getElementById("updateResultContainer").style.display =
-            "block";
+          console.error("City not updated: ", data.error);
         }
       })
       .catch((error) => {
-        document.getElementById(
-          "updateMessage"
-        ).textContent = `Error: ${error}`;
-        document.getElementById("updateResultContainer").style.display =
-          "block";
+        console.error("Error:", error);
       });
   });
 
@@ -183,31 +182,14 @@ document
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.city) {
-            // Remove the city from the main cities table
-            const mainTableBody = document
-              .getElementById("citiesTable")
-              .getElementsByTagName("tbody")[0];
-            [...mainTableBody.rows].forEach((row, index) => {
-              if (row.cells[0].textContent == data.city.id.toString()) {
-                mainTableBody.deleteRow(index);
+          if (data.id) {
+            let rows = document.getElementById("citiesTable").rows;
+            for (let i = 0; i < rows.length; i++) {
+              if (rows[i].cells[0].textContent == data.id) {
+                document.getElementById("citiesTable").deleteRow(i);
+                break;
               }
-            });
-
-            // Display deleted city details in the deleteResultContainer table
-            const deleteResultBody = document
-              .getElementById("deleteResultTable")
-              .getElementsByTagName("tbody")[0];
-            deleteResultBody.innerHTML = ""; // Clear previous result
-            const newRow = deleteResultBody.insertRow();
-            newRow.innerHTML = `
-            <td>${data.city.id}</td>
-            <td>${data.city.city}</td>
-            <td>${data.city.country}</td>
-            <td>${parseInt(data.city.population).toLocaleString()}</td>
-          `;
-            document.getElementById("deleteResultContainer").style.display =
-              "block";
+            }
           } else {
             console.error("Error: ", data.error);
           }
