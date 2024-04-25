@@ -90,7 +90,12 @@ def update_city():
             updated_city = cursor.fetchone()
             conn.commit()
             if updated_city:
-                return jsonify(dict(updated_city)), 200
+                return jsonify({
+                    "id": updated_id, 
+                    "city": data['city'], 
+                    "country": data['country'], 
+                    "population": data['population']
+                }), 200            
             else:
                 return jsonify({"error": "City not updated"}), 404
     except Exception as e:
@@ -108,7 +113,12 @@ def delete_city():
             deleted_city = cursor.fetchone()
             conn.commit()
             if deleted_city:
-                return jsonify(dict(deleted_city)), 200
+                return jsonify({
+                    "id": city_id, 
+                    "city": city_details['city'], 
+                    "country": city_details['country'], 
+                    "population": city_details['population']
+                }), 200
             else:
                 return jsonify({"error": "City not found"}), 404
     except Exception as e:
