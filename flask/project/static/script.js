@@ -152,17 +152,21 @@ document
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {
-          let rows = document.getElementById("citiesTable").rows;
+          let rows = document
+            .getElementById("citiesTable")
+            .getElementsByTagName("tbody")[0].rows;
           for (let i = 0; i < rows.length; i++) {
-            if (rows[i].cells[0].textContent == data.id) {
-              rows[i].cells[1].textContent = data.city;
-              rows[i].cells[2].textContent = data.country;
-              rows[i].cells[3].textContent = parseInt(
-                data.population
-              ).toLocaleString();
+            if (rows[i].cells[0].textContent == id) {
+              rows[i].cells[1].textContent = city;
+              rows[i].cells[2].textContent = country;
+              rows[i].cells[3].textContent =
+                parseInt(population).toLocaleString();
               break;
             }
           }
+          // Display update result container
+          document.getElementById("updateResultContainer").style.display =
+            "block";
         } else {
           console.error("City not updated: ", data.error);
         }
@@ -182,14 +186,19 @@ document
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.id) {
-            let rows = document.getElementById("citiesTable").rows;
+          if (data.city) {
+            let rows = document
+              .getElementById("citiesTable")
+              .getElementsByTagName("tbody")[0].rows;
             for (let i = 0; i < rows.length; i++) {
-              if (rows[i].cells[0].textContent == data.id) {
-                document.getElementById("citiesTable").deleteRow(i);
+              if (rows[i].cells[0].textContent == cityId) {
+                rows[i].remove();
                 break;
               }
             }
+            // Display delete result container
+            document.getElementById("deleteResultContainer").style.display =
+              "block";
           } else {
             console.error("Error: ", data.error);
           }
