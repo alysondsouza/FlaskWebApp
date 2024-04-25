@@ -164,6 +164,7 @@ document
               break;
             }
           }
+          updateTableRow(data);
           // Display update result container
           document.getElementById("updateResultContainer").style.display =
             "block";
@@ -196,6 +197,7 @@ document
                 break;
               }
             }
+            deleteTableRow(cityId);
             // Display delete result container
             document.getElementById("deleteResultContainer").style.display =
               "block";
@@ -250,4 +252,24 @@ function updateResults(data) {
     });
   }
   resultContainer.style.display = "block";
+}
+
+function updateTableRow(data) {
+  let tableBody = document.getElementById("citiesTable").querySelector("tbody");
+  let row = [...tableBody.rows].find(
+    (row) => row.cells[0].innerText == data.id
+  );
+  if (row) {
+    row.cells[1].textContent = data.city;
+    row.cells[2].textContent = data.country;
+    row.cells[3].textContent = parseInt(data.population).toLocaleString();
+  }
+}
+
+function deleteTableRow(cityId) {
+  let tableBody = document.getElementById("citiesTable").querySelector("tbody");
+  let row = [...tableBody.rows].find((row) => row.cells[0].innerText == cityId);
+  if (row) {
+    tableBody.removeChild(row);
+  }
 }
