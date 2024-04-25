@@ -9,7 +9,7 @@ import os
 
 DB_NAME = 'mydatabase'
 DB_USER = 'postgres'
-DB_HOST = '192.168.1.1'
+DB_HOST = '192.168.1.89'
 DB_PASSWORD = '123456'
 
 allowed_origins = [
