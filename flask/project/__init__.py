@@ -66,7 +66,7 @@ def read_city():
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cursor.execute("SELECT id, city as name, country, population FROM cities WHERE LOWER(city) LIKE %s", ('%'+search_query+'%',))
+            cursor.execute("SELECT id, city, country, population FROM cities WHERE LOWER(city) LIKE %s", ('%'+search_query+'%',))
             cities_list = cursor.fetchall()
             return jsonify([dict(city) for city in cities_list])
     except Exception as e:
