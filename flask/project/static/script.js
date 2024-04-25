@@ -69,17 +69,19 @@ window.onload = () => {
 fetch(`${baseUrl}/cities.json`)
   .then((response) => response.json())
   .then((data) => {
+    // Sort data by ID
+    data.sort((a, b) => parseInt(a.id) - parseInt(b.id));
     const tableBody = document
       .getElementById("citiesTable")
       .getElementsByTagName("tbody")[0];
-    data.forEach((item, index) => {
+    data.forEach((item) => {
       let newRow = tableBody.insertRow();
       newRow.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${item.city}</td>
-            <td>${item.country}</td>
-            <td>${item.population.toLocaleString()}</td>
-        `;
+        <td>${item.id}</td>
+        <td>${item.city}</td>
+        <td>${item.country}</td>
+        <td>${item.population.toLocaleString()}</td>
+      `;
     });
   })
   .catch((error) => console.error("Error:", error));
