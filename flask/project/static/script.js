@@ -116,10 +116,10 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
           <td>${data.country}</td>
           <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-        // Also, show it in the add result table
         const addResultBody = document
           .getElementById("addResultTable")
           .getElementsByTagName("tbody")[0];
+        addResultBody.innerHTML = "";
         const newRowInAddResult = addResultBody.insertRow();
         newRowInAddResult.innerHTML = `
           <td>${data.id}</td>
