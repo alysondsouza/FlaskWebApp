@@ -40,7 +40,7 @@ def cities():
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            cursor.execute("SELECT id, city, country, population FROM cities")
+            cursor.execute("SELECT id, city, country, population FROM cities ORDER BY id")
             cities_list = cursor.fetchall()
             return jsonify([dict(city) for city in cities_list])
     except Exception as e:
