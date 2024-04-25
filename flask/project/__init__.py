@@ -91,10 +91,10 @@ def update_city():
             conn.commit()
             if updated_city:
                 return jsonify({
-                    "id": updated_id, 
-                    "city": data['city'], 
-                    "country": data['country'], 
-                    "population": data['population']
+                    "id": updated_city['id'], 
+                    "city": updated_city['city'], 
+                    "country": updated_city['country'], 
+                    "population": updated_city['population']
                 }), 200            
             else:
                 return jsonify({"error": "City not updated"}), 404
@@ -114,10 +114,10 @@ def delete_city():
             conn.commit()
             if deleted_city:
                 return jsonify({
-                    "id": city_id, 
-                    "city": city_details['city'], 
-                    "country": city_details['country'], 
-                    "population": city_details['population']
+                    "id": deleted_city['id'], 
+                    "city": deleted_city['city'], 
+                    "country": deleted_city['country'], 
+                    "population": deleted_city['population']
                 }), 200
             else:
                 return jsonify({"error": "City not found"}), 404
