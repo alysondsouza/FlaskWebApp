@@ -182,9 +182,9 @@ document
         .then((response) => response.json())
         .then((data) => {
           if (data.id) {
-            deleteTableRow(data.id);
-            // Update the resultContainer to show the deleted city information
-            updateResults([data]);
+            deleteTableRow(cityId);
+            // Use updateResults to show the deleted city information
+            updateResults([data], []); // passing empty array for updatedData
             document.getElementById("resultContainer").style.display = "block";
           } else {
             console.error("Error: ", data.error);
@@ -194,7 +194,6 @@ document
           console.error("Error:", error);
         });
     }
-    this.reset();
   });
 
 searchFunctionButton.addEventListener("click", (e) => {
@@ -221,15 +220,13 @@ function performSearch(query) {
 }
 
 function updateResults(originalData, updatedData) {
-  const resultBody = document
-    .getElementById("resultTable")
-    .querySelector("tbody");
+  const resultBody = document.getElementById("resultTable").querySelector("tbody");
   resultBody.innerHTML = ""; // Clear previous results
 
   // Add original data row(s)
   originalData.forEach((item) => {
     let originalRow = resultBody.insertRow();
-    originalRow.classList.add("table-warning"); // Bootstrap class for highlighting
+    originalRow.classList.add('table-warning'); // Highlight for original data
     originalRow.innerHTML = `
       <td>${item.id}</td>
       <td>${item.city}</td>
@@ -237,6 +234,21 @@ function updateResults(originalData, updatedData) {
       <td>${parseInt(item.population).toLocaleString()}</td>
     `;
   });
+
+  // Only add updated data row(s) if there is updated data
+  if (updatedData.length > 0) {
+    updatedData.forEach((item) => {
+      let updatedRow = resultBody.insertRow();
+      updatedRow.classList.add('table-success'); // Highlight for updated data
+      updatedRow.innerHTML = `
+        <td>${item.id}</td>
+        <td>${item.city}</td>
+        <td>${item.country}</td>
+        <td>${parseInt(item.population).toLocaleString()}</td>
+      `;
+    });
+  }
+}
 
   // Add updated data row(s)
   updatedData.forEach((item) => {
