@@ -220,13 +220,15 @@ function performSearch(query) {
 }
 
 function updateResults(originalData, updatedData) {
-  const resultBody = document.getElementById("resultTable").querySelector("tbody");
+  const resultBody = document
+    .getElementById("resultTable")
+    .querySelector("tbody");
   resultBody.innerHTML = ""; // Clear previous results
 
   // Add original data row(s)
   originalData.forEach((item) => {
     let originalRow = resultBody.insertRow();
-    originalRow.classList.add('table-warning'); // Highlight for original data
+    originalRow.classList.add("table-warning"); // Highlight for original data
     originalRow.innerHTML = `
       <td>${item.id}</td>
       <td>${item.city}</td>
@@ -239,7 +241,7 @@ function updateResults(originalData, updatedData) {
   if (updatedData.length > 0) {
     updatedData.forEach((item) => {
       let updatedRow = resultBody.insertRow();
-      updatedRow.classList.add('table-success'); // Highlight for updated data
+      updatedRow.classList.add("table-success"); // Highlight for updated data
       updatedRow.innerHTML = `
         <td>${item.id}</td>
         <td>${item.city}</td>
@@ -248,19 +250,6 @@ function updateResults(originalData, updatedData) {
       `;
     });
   }
-}
-
-  // Add updated data row(s)
-  updatedData.forEach((item) => {
-    let updatedRow = resultBody.insertRow();
-    updatedRow.classList.add("table-success"); // Bootstrap class for highlighting
-    updatedRow.innerHTML = `
-      <td>${item.id}</td>
-      <td>${item.city}</td>
-      <td>${item.country}</td>
-      <td>${parseInt(item.population).toLocaleString()}</td>
-    `;
-  });
 }
 
 function updateTableRow(data) {
