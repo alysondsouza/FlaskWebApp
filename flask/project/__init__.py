@@ -81,7 +81,12 @@ def update_city():
         return jsonify({"error": "City ID is required"}), 400
     try:
         with get_db_connection() as conn:
-            cursor = conn.cursor()
+            cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            # First, get the original data
+            cursor.execute("SELECT * FROM cities WHERE id = %s;", (city_id,))
+            original_city = cursor.fetchone()
+            
+            # Then, perform the update
             cursor.execute("""
                 UPDATE cities 
                 SET city=%s, country=%s, population=%s 
@@ -90,11 +95,20 @@ def update_city():
             updated_city = cursor.fetchone()
             conn.commit()
             if updated_city:
+                # Return both original and updated data
                 return jsonify({
-                    "id": updated_city['id'], 
-                    "city": updated_city['city'], 
-                    "country": updated_city['country'], 
-                    "population": updated_city['population']
+                    "original": {
+                        "id": original_city['id'], 
+                        "city": original_city['city'], 
+                        "country": original_city['country'], 
+                        "population": original_city['population']
+                    },
+                    "updated": {
+                        "id": updated_city['id'], 
+                        "city": updated_city['city'], 
+                        "country": updated_city['country'], 
+                        "population": updated_city['population']
+                    }
                 }), 200            
             else:
                 return jsonify({"error": "City not updated"}), 404

@@ -156,10 +156,10 @@ document
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.id) {
-          updateTableRow(data);
-          // Update the resultContainer to show the updated city information
-          updateResults([data]);
+        if (data.updated && data.original) {
+          updateTableRow(data.updated);
+          // Update the resultContainer to show both the original and updated city information
+          updateResults([data.original], [data.updated]);
           document.getElementById("resultContainer").style.display = "block";
         } else {
           console.error("City not updated: ", data.error);
@@ -168,6 +168,7 @@ document
       .catch((error) => {
         console.error("Error:", error);
       });
+    this.reset();
   });
 
 document
@@ -193,6 +194,7 @@ document
           console.error("Error:", error);
         });
     }
+    this.reset();
   });
 
 searchFunctionButton.addEventListener("click", (e) => {
@@ -218,16 +220,29 @@ function performSearch(query) {
     });
 }
 
-function updateResults(data) {
-  // This function now needs to handle both update and delete results,
-  // so it will display a table with the data passed to it
+function updateResults(originalData, updatedData) {
   const resultBody = document
     .getElementById("resultTable")
     .querySelector("tbody");
   resultBody.innerHTML = ""; // Clear previous results
-  data.forEach((item, index) => {
-    let newRow = resultBody.insertRow();
-    newRow.innerHTML = `
+
+  // Add original data row(s)
+  originalData.forEach((item) => {
+    let originalRow = resultBody.insertRow();
+    originalRow.classList.add("table-warning"); // Bootstrap class for highlighting
+    originalRow.innerHTML = `
+      <td>${item.id}</td>
+      <td>${item.city}</td>
+      <td>${item.country}</td>
+      <td>${parseInt(item.population).toLocaleString()}</td>
+    `;
+  });
+
+  // Add updated data row(s)
+  updatedData.forEach((item) => {
+    let updatedRow = resultBody.insertRow();
+    updatedRow.classList.add("table-success"); // Bootstrap class for highlighting
+    updatedRow.innerHTML = `
       <td>${item.id}</td>
       <td>${item.city}</td>
       <td>${item.country}</td>
