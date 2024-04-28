@@ -203,6 +203,8 @@ searchFunctionButton.addEventListener("click", (e) => {
     .value.trim()
     .toLowerCase();
 
+  resultContainer.style.display = "block";
+
   if (searchValue !== "") {
     performSearch(searchValue);
   }

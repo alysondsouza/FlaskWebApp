@@ -212,6 +212,10 @@ h2 {
     opacity: 0.8; /* slightly transparent on hover */
 }
 
+.table-success {
+    background-color: #cfdb9e;
+  }
+
 /* Margin for form groups */
 .form-group {
     margin-bottom: 20px;
