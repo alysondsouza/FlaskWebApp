@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
-import psycopg2
-import psycopg2.extras
-from flask_cors import CORS
+import psycopg2 # type: ignore
+import psycopg2.extras # type: ignore
+from flask_cors import CORS # type: ignore
 import os
 
 DB_NAME = 'mydatabase'
