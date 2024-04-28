@@ -184,7 +184,7 @@ document
           if (data.id) {
             deleteTableRow(cityId);
             // Use updateResults to show the deleted city information
-            updateResults([], [data]); // passing empty array for updatedData
+            updateResults([data], []); // passing empty array for updatedData
             document.getElementById("resultContainer").style.display = "block";
           } else {
             console.error("Error: ", data.error);
