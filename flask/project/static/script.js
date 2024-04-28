@@ -89,6 +89,7 @@ fetch(`${baseUrl}/cities.json`)
 
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
+  // Get the values from the form
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
@@ -103,25 +104,30 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        const resultTableBody = document
+        // Add to the main cities table
+        const tableBody = document
+          .getElementById("citiesTable")
+          .querySelector("tbody");
+        const newRow = tableBody.insertRow();
+        newRow.innerHTML = `
+            <td>${data.id}</td>
+            <td>${data.city}</td>
+            <td>${data.country}</td>
+            <td>${parseInt(data.population).toLocaleString()}</td>
+          `;
+        // Now show the resultContainer with no color for new entry
+        const resultBody = document
           .getElementById("resultTable")
           .querySelector("tbody");
-
-        // Clear out the previous result before adding a new one
-        resultTableBody.innerHTML = "";
-
-        let newRow = resultTableBody.insertRow();
-        newRow.innerHTML = `
-          <td>${data.id}</td>
-          <td>${data.city}</td>
-          <td>${data.country}</td>
-          <td>${parseInt(data.population).toLocaleString()}</td>
-        `;
-
-        // Add class to highlight the newly added row if needed
-        newRow.classList.add("table-success");
-
-        // Show the result container with the new data
+        resultBody.innerHTML = ""; // Clear previous results
+        let resultRow = resultBody.insertRow();
+        resultRow.innerHTML = `
+            <td>${data.id}</td>
+            <td>${data.city}</td>
+            <td>${data.country}</td>
+            <td>${parseInt(data.population).toLocaleString()}</td>
+          `;
+        // Do not apply 'table-success' to new rows
         resultContainer.style.display = "block";
       } else {
         console.error("City not added: ", data.error);
@@ -130,7 +136,6 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .catch((error) => {
       console.error("Error:", error);
     });
-  // Reset the form after submission
   this.reset();
 });
 
