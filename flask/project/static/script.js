@@ -103,17 +103,24 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        // Add to the resultTable directly since we're using only one table now
         const resultTableBody = document
           .getElementById("resultTable")
-          .getElementsByTagName("tbody")[0];
+          .querySelector("tbody");
+
+        // Clear out the previous result before adding a new one
+        resultTableBody.innerHTML = "";
+
         let newRow = resultTableBody.insertRow();
         newRow.innerHTML = `
-            <td>${data.id}</td>
-            <td>${data.city}</td>
-            <td>${data.country}</td>
-            <td>${parseInt(data.population).toLocaleString()}</td>
-          `;
+          <td>${data.id}</td>
+          <td>${data.city}</td>
+          <td>${data.country}</td>
+          <td>${parseInt(data.population).toLocaleString()}</td>
+        `;
+
+        // Add class to highlight the newly added row if needed
+        newRow.classList.add("table-success");
+
         // Show the result container with the new data
         resultContainer.style.display = "block";
       } else {
