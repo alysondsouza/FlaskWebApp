@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alyson's Webserver</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest">
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS file -->
+</head>
+<body>
+
+
+<!-- Header container -->
+<div class="header-container neumorphism">
+    <img src="{{ url_for('static', filename='img/Alyson_Logo.png') }}" alt="Alyson Logo" class="header-logo">
+    <div class="navigation">
+        <button id="homeButton" class="nav-button">Home</button>
+        <button id="createButton" class="nav-button">Create</button>
+        <button id="readButton" class="nav-button">Read</button>
+        <button id="updateButton" class="nav-button">Update</button>
+        <button id="deleteButton" class="nav-button">Delete</button>
+    </div>
+</div>
+
+<!-- Table container -->
+<div class="container neumorphism">
+    <table class="table table-bordered table-striped" id="citiesTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Population</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Add container -->
+<div class="form-container neumorphism">
+    <form id="addCityForm">
+        <div class="form-group">
+            <label for="cityName">City:</label>
+            <input type="text" class="form-control" id="cityName" required>
+        </div>
+        <div class="form-group">
+            <label for="countryName">Country:</label>
+            <input type="text" class="form-control" id="countryName" required>
+        </div>
+        <div class="form-group">
+            <label for="populationCount">Population:</label>
+            <input type="number" class="form-control" id="populationCount" required>
+        </div>
+        <button type="submit" id="AddFunctionButton" class="btn btn-primary">Add</button>
+    </form>
+</div>
+
+<!-- Search container -->
+<div class="search-container neumorphism">
+    <input type="text" id="searchInput" placeholder="Search for a city..." class="form-control">
+    <button type="submit" id="searchFunctionButton" class="btn btn-primary">Search</button>
+</div>
+
+<!-- Update container -->
+<div class="update-container neumorphism" style="display:none;">
+    <form id="updateCityForm">
+        <div class="form-group">
+            <label for="updateCityId">City ID:</label>
+            <input type="text" class="form-control" placeholder="Enter city ID to update..." id="updateCityId" required>
+        </div>
+        <div class="form-group">
+            <label for="updateCityName">City:</label>
+            <input type="text" class="form-control" id="updateCityName" required>
+        </div>
+        <div class="form-group">
+            <label for="updateCountryName">Country:</label>
+            <input type="text" class="form-control" id="updateCountryName" required>
+        </div>
+        <div class="form-group">
+            <label for="updatePopulationCount">Population:</label>
+            <input type="number" class="form-control" id="updatePopulationCount" required>
+        </div>
+        <button type="submit" id="updateFunctionButton" class="btn btn-primary btn-warning">Update</button>
+    </form>
+</div>
+
+<!-- Delete container -->
+<div class="delete-container neumorphism" style="display:none;">
+    <input type="text" id="deleteInput" placeholder="Enter city ID to delete..." class="form-control">
+    <button type="submit" id="deleteFunctionButton" class="btn btn-primary btn-danger">Delete</button>
+</div>
+
+<!-- Result container -->
+<div id="resultContainer" class="container neumorphism" style="display:none;">
+    <table class="table table-bordered table-striped" id="resultTable">
+      <thead class="thead-dark">
+        <tr>
+          <th>ID</th>
+          <th>City</th>
+          <th>Country</th>
+          <th>Population</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Results will be inserted here dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script> <!-- Link to the external JavaScript file -->
+<script src="script.js"></script> <!-- Link to the external JavaScript file -->
+</body>
+</html>
