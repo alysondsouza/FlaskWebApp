@@ -166,6 +166,10 @@ h2 {
     background-color: #dc3545;
 }
 
+.table-success {
+    background-color: #cfdb9e; 
+}
+
 /* Layout for update section */
 .update-container, #updateResultContainer {
     display: flex;

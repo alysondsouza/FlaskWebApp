@@ -22,7 +22,6 @@ function hideAllContainers() {
   addContainer.style.display = "none";
   updateContainer.style.display = "none";
   deleteContainer.style.display = "none";
-  addResultContainer.style.display = "none";
 }
 
 homeButton.addEventListener("click", () => {
@@ -42,7 +41,7 @@ searchFunctionButton.addEventListener("click", () => {
     .toLowerCase();
 
   if (searchValue !== "") {
-    document.getElementById("resultContainer").style.display = "block";
+    resultContainer.style.display = "block";
   }
   resultContainer.style.display = "block";
 });
@@ -127,7 +126,7 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
           <td>${data.country}</td>
           <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-        document.getElementById("addResultContainer").style.display = "block";
+        resultContainer.style.display = "block";
       } else {
         console.error("City not added: ", data.error);
       }
@@ -160,7 +159,7 @@ document
           updateTableRow(data.updated);
           // Update the resultContainer to show both the original and updated city information
           updateResults([data.original], [data.updated]);
-          document.getElementById("resultContainer").style.display = "block";
+          resultContainer.style.display = "block";
         } else {
           console.error("City not updated: ", data.error);
         }
@@ -185,7 +184,7 @@ document
             deleteTableRow(cityId);
             // Use updateResults to show the deleted city information
             updateResults([data], []); // passing empty array for updatedData
-            document.getElementById("resultContainer").style.display = "block";
+            resultContainer.style.display = "block";
           } else {
             console.error("Error: ", data.error);
           }
@@ -226,11 +225,10 @@ function updateResults(originalData, updatedData) {
     .querySelector("tbody");
   resultBody.innerHTML = ""; // Clear previous results
 
-  // Add original data row(s)
+  // Add data to the results table
   originalData.forEach((item) => {
-    let originalRow = resultBody.insertRow();
-    // originalRow.classList.add("table-warning"); // Highlight for original data
-    originalRow.innerHTML = `
+    let row = resultBody.insertRow();
+    row.innerHTML = `
       <td>${item.id}</td>
       <td>${item.city}</td>
       <td>${item.country}</td>
@@ -238,11 +236,11 @@ function updateResults(originalData, updatedData) {
     `;
   });
 
-  // Only add updated data row(s) if there is updated data
-  if (updatedData.length > 0) {
+  // Highlight updated data in green
+  if (updatedData && updatedData.length > 0) {
     updatedData.forEach((item) => {
       let updatedRow = resultBody.insertRow();
-      updatedRow.classList.add("table-success"); // Highlight for updated data
+      updatedRow.classList.add("table-success"); // This adds the green background
       updatedRow.innerHTML = `
         <td>${item.id}</td>
         <td>${item.city}</td>
