@@ -127,7 +127,7 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
           <td>${data.country}</td>
           <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-        document.getElementById("addResultContainer").style.display = "block";
+        document.getElementById("resultContainer").style.display = "block";
       } else {
         console.error("City not added: ", data.error);
       }
