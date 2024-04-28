@@ -89,7 +89,6 @@ fetch(`${baseUrl}/cities.json`)
 
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  // Get the values from the form
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
@@ -104,28 +103,18 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        // Add to the main cities table
-        const mainTableBody = document
-          .getElementById("citiesTable")
+        // Add to the resultTable directly since we're using only one table now
+        const resultTableBody = document
+          .getElementById("resultTable")
           .getElementsByTagName("tbody")[0];
-        const newRow = mainTableBody.insertRow();
+        let newRow = resultTableBody.insertRow();
         newRow.innerHTML = `
-          <td>${data.id}</td>
-          <td>${data.city}</td>
-          <td>${data.country}</td>
-          <td>${parseInt(data.population).toLocaleString()}</td>
-        `;
-        const addResultBody = document
-          .getElementById("addResultTable")
-          .getElementsByTagName("tbody")[0];
-        addResultBody.innerHTML = "";
-        const newRowInAddResult = addResultBody.insertRow();
-        newRowInAddResult.innerHTML = `
-          <td>${data.id}</td>
-          <td>${data.city}</td>
-          <td>${data.country}</td>
-          <td>${parseInt(data.population).toLocaleString()}</td>
-        `;
+            <td>${data.id}</td>
+            <td>${data.city}</td>
+            <td>${data.country}</td>
+            <td>${parseInt(data.population).toLocaleString()}</td>
+          `;
+        // Show the result container with the new data
         resultContainer.style.display = "block";
       } else {
         console.error("City not added: ", data.error);
@@ -134,6 +123,7 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .catch((error) => {
       console.error("Error:", error);
     });
+  // Reset the form after submission
   this.reset();
 });
 
