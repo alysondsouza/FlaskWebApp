@@ -23,6 +23,9 @@ function hideAllContainers() {
   updateContainer.style.display = "none";
   deleteContainer.style.display = "none";
   addResultContainer.style.display = "none";
+  if (tableContainer.querySelector("tbody").childElementCount > 0) {
+    resultContainer.style.display = "block";
+  }
 }
 
 homeButton.addEventListener("click", () => {
@@ -127,7 +130,7 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
           <td>${data.country}</td>
           <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-        document.getElementById("resultContainer").style.display = "block";
+        resultContainer.style.display = "block";
       } else {
         console.error("City not added: ", data.error);
       }
@@ -160,7 +163,7 @@ document
           updateTableRow(data.updated);
           // Update the resultContainer to show both the original and updated city information
           updateResults([data.original], [data.updated]);
-          document.getElementById("resultContainer").style.display = "block";
+          resultContainer.style.display = "block";
         } else {
           console.error("City not updated: ", data.error);
         }
@@ -185,7 +188,7 @@ document
             deleteTableRow(cityId);
             // Use updateResults to show the deleted city information
             updateResults([data], []); // passing empty array for updatedData
-            document.getElementById("resultContainer").style.display = "block";
+            resultContainer.style.display = "block";
           } else {
             console.error("Error: ", data.error);
           }
@@ -203,6 +206,8 @@ searchFunctionButton.addEventListener("click", (e) => {
     .getElementById("searchInput")
     .value.trim()
     .toLowerCase();
+
+  resultContainer.style.display = "block";
 
   if (searchValue !== "") {
     performSearch(searchValue);
