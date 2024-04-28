@@ -168,7 +168,6 @@ document
       .catch((error) => {
         console.error("Error:", error);
       });
-    this.reset();
   });
 
 document
@@ -194,7 +193,6 @@ document
           console.error("Error:", error);
         });
     }
-    this.reset();
   });
 
 searchFunctionButton.addEventListener("click", (e) => {
