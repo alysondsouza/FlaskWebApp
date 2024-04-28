@@ -184,7 +184,7 @@ document
           if (data.id) {
             deleteTableRow(cityId);
             // Use updateResults to show the deleted city information
-            updateResults([data], []); // passing empty array for updatedData
+            updateResults([], [data]); // passing empty array for updatedData
             document.getElementById("resultContainer").style.display = "block";
           } else {
             console.error("Error: ", data.error);
@@ -228,7 +228,7 @@ function updateResults(originalData, updatedData) {
   // Add original data row(s)
   originalData.forEach((item) => {
     let originalRow = resultBody.insertRow();
-    originalRow.classList.add("table-warning"); // Highlight for original data
+    // originalRow.classList.add("table-warning"); // Highlight for original data
     originalRow.innerHTML = `
       <td>${item.id}</td>
       <td>${item.city}</td>
