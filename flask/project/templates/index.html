@@ -61,7 +61,7 @@
             <label for="populationCount">Population:</label>
             <input type="number" class="form-control" id="populationCount" required>
         </div>
-        <button type="submit" id="AddFunctionButton" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">Add</button>
     </form>
 </div>
 
@@ -96,8 +96,10 @@
 
 <!-- Delete container -->
 <div class="delete-container neumorphism" style="display:none;">
-    <input type="text" id="deleteInput" placeholder="Enter city ID to delete..." class="form-control">
-    <button type="submit" id="deleteFunctionButton" class="btn btn-primary btn-danger">Delete</button>
+    <form id="deleteCityForm">
+        <input type="text" id="deleteInput" placeholder="Enter city ID to delete..." class="form-control">
+        <button type="submit" id="deleteFunctionButton" class="btn btn-primary btn-danger">Delete</button>
+    </form>
 </div>
 
 <!-- Result container -->

@@ -90,7 +90,6 @@ fetch(`${baseUrl}/cities.json`)
 
 document.getElementById("addCityForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  // Get the values from the form
   const city = document.getElementById("cityName").value;
   const country = document.getElementById("countryName").value;
   const population = document.getElementById("populationCount").value;
@@ -105,7 +104,9 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
     .then((response) => response.json())
     .then((data) => {
       if (data.id) {
-        // Add to the main cities table
+        updateResults([data], []); // No highlight for create
+        document.getElementById("addResultContainer").style.display = "block";
+        // Update the main cities table with the new city
         const mainTableBody = document
           .getElementById("citiesTable")
           .getElementsByTagName("tbody")[0];
@@ -116,25 +117,11 @@ document.getElementById("addCityForm").addEventListener("submit", function (e) {
           <td>${data.country}</td>
           <td>${parseInt(data.population).toLocaleString()}</td>
         `;
-        const addResultBody = document
-          .getElementById("addResultTable")
-          .getElementsByTagName("tbody")[0];
-        addResultBody.innerHTML = "";
-        const newRowInAddResult = addResultBody.insertRow();
-        newRowInAddResult.innerHTML = `
-          <td>${data.id}</td>
-          <td>${data.city}</td>
-          <td>${data.country}</td>
-          <td>${parseInt(data.population).toLocaleString()}</td>
-        `;
-        document.getElementById("addResultContainer").style.display = "block";
       } else {
         console.error("City not added: ", data.error);
       }
     })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    .catch((error) => console.error("Error:", error));
   this.reset();
 });
 
@@ -157,17 +144,13 @@ document
       .then((response) => response.json())
       .then((data) => {
         if (data.updated && data.original) {
-          updateTableRow(data.updated);
-          // Update the resultContainer to show both the original and updated city information
-          updateResults([data.original], [data.updated]);
-          document.getElementById("resultContainer").style.display = "block";
+          updateTableRow(data.updated); // Update the main cities table
+          updateResults([data.original], [data.updated]); // Highlight for update
         } else {
           console.error("City not updated: ", data.error);
         }
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      .catch((error) => console.error("Error:", error));
     this.reset();
   });
 
@@ -182,19 +165,14 @@ document
         .then((response) => response.json())
         .then((data) => {
           if (data.id) {
-            deleteTableRow(cityId);
-            // Use updateResults to show the deleted city information
-            updateResults([data], []); // passing empty array for updatedData
-            document.getElementById("resultContainer").style.display = "block";
+            deleteTableRow(cityId); // Remove the city from the main cities table
+            updateResults([data], []); // No highlight for delete
           } else {
             console.error("Error: ", data.error);
           }
         })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+        .catch((error) => console.error("Error:", error));
     }
-    this.reset();
   });
 
 searchFunctionButton.addEventListener("click", (e) => {
@@ -226,31 +204,18 @@ function updateResults(originalData, updatedData) {
     .querySelector("tbody");
   resultBody.innerHTML = ""; // Clear previous results
 
-  // Add original data row(s)
   originalData.forEach((item) => {
-    let originalRow = resultBody.insertRow();
-    // originalRow.classList.add("table-warning"); // Highlight for original data
-    originalRow.innerHTML = `
+    let row = resultBody.insertRow();
+    row.innerHTML = `
       <td>${item.id}</td>
       <td>${item.city}</td>
       <td>${item.country}</td>
       <td>${parseInt(item.population).toLocaleString()}</td>
     `;
+    if (updatedData && updatedData.length > 0) {
+      row.classList.add("table-success");
+    }
   });
-
-  // Only add updated data row(s) if there is updated data
-  if (updatedData.length > 0) {
-    updatedData.forEach((item) => {
-      let updatedRow = resultBody.insertRow();
-      updatedRow.classList.add("table-success"); // Highlight for updated data
-      updatedRow.innerHTML = `
-        <td>${item.id}</td>
-        <td>${item.city}</td>
-        <td>${item.country}</td>
-        <td>${parseInt(item.population).toLocaleString()}</td>
-      `;
-    });
-  }
 }
 
 function updateTableRow(data) {
