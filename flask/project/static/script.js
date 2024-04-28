@@ -194,6 +194,7 @@ document
           console.error("Error:", error);
         });
     }
+    this.reset();
   });
 
 searchFunctionButton.addEventListener("click", (e) => {
